@@ -53,6 +53,66 @@ body.body-public{
 }
 
 /* -------------------------------------------------------------------------
+   1b) TÜRETİLMİŞ DEĞİŞKENLER — ÖNEMLİ
+   Panel :root üzerinde --color-id-* değerlerinden TÜRETEN 137 değişken daha
+   tanımlıyor (--navbar_public_items_text_color: var(--color-id-26) gibi).
+   Bunlar :root'ta çözümlendiği için yukarıdaki body seviyesindeki remap
+   onlara ULAŞMAZ — o yüzden public sayfayla ilgili olanları burada
+   yeniden tanımlıyoruz. Bu blok olmazsa navbar linkleri, form inputları ve
+   footer eski lacivert renkte kalır.
+   ---------------------------------------------------------------------- */
+body.body-public{
+  --text-dark:var(--ot-fg);
+  --link:var(--ot-accent2);
+
+  --navbar_public_items_text_color:var(--ot-fg2);
+  --navbar_public_items_hover_text_color:var(--ot-fg);
+  --navbar_public_items_active_text_color:var(--ot-fg);
+  --navbar_public_background_color:transparent;
+  --navbar_public_box_shadow:none;
+
+  --footer_public_text_color:var(--ot-fg3);
+  --footer_public_background_color:var(--ot-ink2);
+
+  --card_background_color:transparent;
+
+  --form_group_input_background_color:rgba(7,8,10,.55);
+  --form_group_input_text_color:var(--ot-fg);
+  --form_group_input_border_color:var(--ot-line);
+  --form_group_input_focus_background_color:rgba(7,8,10,.75);
+  --form_group_input_focus_text_color:var(--ot-fg);
+  --form_group_input_focus_border_color:var(--ot-accent);
+  --form_group_input_label_text_color:var(--ot-fg3);
+  --form_group_input_small_text_color:var(--ot-fg3);
+  --form_group_icon_color:var(--ot-fg3);
+
+  --button_primary_text_color:#fff;
+  --button_primary_background_color:var(--ot-accent);
+  --button_primary_border_color:transparent;
+  --button_primary_hover_text_color:#fff;
+  --button_primary_hover_background_color:#2A6FE8;
+  --button_primary_hover_border_color:transparent;
+  --button_action_text_color:#fff;
+  --button_action_background_color:var(--ot-accent);
+  --button_action_border_color:transparent;
+  --button_secondary_text_color:var(--ot-fg);
+  --button_secondary_background_color:transparent;
+  --button_secondary_border_color:var(--ot-line);
+  --button_secondary_hover_text_color:var(--ot-fg);
+  --button_secondary_hover_background_color:var(--ot-panel2);
+  --button_secondary_hover_border_color:var(--ot-line);
+
+  --code_background_color:var(--ot-ink2);
+  --code_text_color:var(--ot-fg2);
+  --modal_background_color:var(--ot-ink2);
+  --modal_close_color:var(--ot-fg2);
+  --platforms_text_color:var(--ot-fg2);
+  --platforms_background_color:var(--ot-panel);
+  --platforms_border_color:var(--ot-line);
+  --platforms_icon_color:var(--ot-accent2);
+}
+
+/* -------------------------------------------------------------------------
    2) TEMEL — zemin, tipografi, grain
    ---------------------------------------------------------------------- */
 body.body-public{
@@ -127,18 +187,73 @@ body.body-public{
   box-shadow:0 0 0 4px rgba(46,124,255,.18);flex:none;
 }
 
-.body-public .navbar-nav .nav-link,
-.body-public .navbar-nav a{
-  font-size:13.5px !important;color:var(--ot-fg2) !important;
-  position:relative;padding:6px 0 !important;margin-inline:14px;
+/* Menü düzeni: solda linkler, sağda Sign in / Sign up butonları (demo düzeni).
+   Panel sırası: Sign in, Services, API, Sign up, Blog — flex order ile diziyoruz. */
+.body-public .component-navbar-collapse{flex:1;justify-content:flex-end}
+.body-public .navbar-nav{
+  display:flex;align-items:center;gap:4px;width:100%;justify-content:flex-end;
+}
+.body-public .navbar-nav .nav-item{order:2}
+.body-public .navbar-nav .nav-item:has(a[href="/services"]){order:1}
+.body-public .navbar-nav .nav-item:has(a[href="/api"]){order:2}
+.body-public .navbar-nav .nav-item:has(a[href="/blog"]){order:3}
+.body-public .navbar-nav .nav-item:has(a[href="/"]){order:4;margin-left:auto}
+.body-public .navbar-nav .nav-item:has(a[href="/signup"]){order:5}
+
+.body-public .component-navbar-nav-link{
+  font-size:13.5px !important;position:relative;
+  padding:6px 0 !important;margin-inline:14px;
   transition:color .25s var(--ot-ease);
 }
-.body-public .navbar-nav a::after{
+.body-public .component-navbar-nav-link::after{
   content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
   background:var(--ot-fg);transition:width .3s var(--ot-ease);
 }
-.body-public .navbar-nav a:hover{color:var(--ot-fg) !important}
-.body-public .navbar-nav a:hover::after{width:100%}
+.body-public .component-navbar-nav-link:hover::after{width:100%}
+
+/* Sign in -> hayalet pill, Sign up -> dolu pill */
+.body-public .navbar .navbar-nav .nav-item a[href="/"],
+.body-public .navbar .navbar-nav .nav-item a[href="/signup"]{
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;
+  height:40px !important;padding:0 20px !important;margin-inline:5px !important;
+  border-radius:100px !important;line-height:1 !important;
+  font-weight:600 !important;font-size:14px !important;text-decoration:none !important;
+  transition:transform .35s var(--ot-ease),background .3s,box-shadow .35s !important;
+}
+.body-public .navbar .navbar-nav .nav-item a[href="/"]::after,
+.body-public .navbar .navbar-nav .nav-item a[href="/signup"]::after{display:none !important}
+
+/* Renkleri panelin kendi değişkenleri üzerinden eziyoruz — panel bu linklerde
+   `color: var(...) !important` kullandığı için doğrudan `color` ezmesi tutmuyor. */
+.body-public .navbar-nav .nav-item a[href="/"]{
+  --navbar_public_items_text_color:var(--ot-fg);
+  --navbar_public_items_hover_text_color:var(--ot-fg);
+  --navbar_public_items_active_text_color:var(--ot-fg);
+  border:1px solid var(--ot-line) !important;background:transparent !important;
+}
+.body-public .navbar-nav .nav-item a[href="/"]:hover{
+  background:var(--ot-panel2) !important;transform:translateY(-2px);
+}
+.body-public .navbar-nav .nav-item a[href="/signup"]{
+  --navbar_public_items_text_color:#fff;
+  --navbar_public_items_hover_text_color:#fff;
+  --navbar_public_items_active_text_color:#fff;
+  background:var(--ot-accent) !important;border:1px solid transparent !important;
+  box-shadow:0 10px 30px -10px var(--ot-glow) !important;
+}
+.body-public .navbar-nav .nav-item a[href="/signup"]:hover{
+  transform:translateY(-2px);box-shadow:0 18px 40px -12px var(--ot-glow) !important;
+}
+
+/* Mobilde pill'ler tam genişlik, sıralama sıfırlanır */
+@media (max-width:991px){
+  .body-public .navbar-nav{flex-direction:column;align-items:stretch;gap:2px}
+  .body-public .navbar-nav .nav-item{order:0 !important;margin-left:0 !important}
+  .body-public .navbar .navbar-nav .nav-item a[href="/"],
+  .body-public .navbar .navbar-nav .nav-item a[href="/signup"]{
+    width:100%;height:46px !important;margin:6px 0 0 !important;
+  }
+}
 .body-public .navbar-burger-line,
 .body-public .navbar-burger-line::before,
 .body-public .navbar-burger-line::after{background:var(--ot-fg) !important}
@@ -191,6 +306,14 @@ body.body-public{
 }
 .body-public .block-signin-text__block-text-description strong{color:var(--ot-fg)}
 .body-public .block-signin-text .row{align-items:center}
+
+/* İki tonlu başlık — H1 içinde şu şekilde kullan (panel editöründen yazılabilir):
+   Followers, likes and views — <span class="ot-outline">delivered instantly.</span> */
+.body-public .ot-outline{
+  color:transparent;
+  -webkit-text-stroke:1px var(--ot-fg3);
+  font-variation-settings:"wdth" 88,"wght" 400;
+}
 
 /* -------------------------------------------------------------------------
    5) KARTLAR + FORM (giriş kartı dahil)
@@ -267,6 +390,10 @@ body.body-public{
 .body-public .block-signin-text__sign-up-link{
   color:var(--ot-fg) !important;border-bottom:1px solid var(--ot-line);margin-left:6px;
 }
+/* "Do not have an account?" satırı — panelde rengi sabit lacivert kodlanmış */
+.body-public .component_card .card{color:var(--ot-fg2) !important}
+.body-public .card .text-center.d-flex{gap:6px;margin-top:18px;font-size:13px}
+.body-public .card .text-center.d-flex > div{color:var(--ot-fg3) !important}
 
 /* -------------------------------------------------------------------------
    6) ÖZELLİK KARTLARI (#block_55)

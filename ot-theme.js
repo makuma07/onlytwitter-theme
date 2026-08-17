@@ -19,6 +19,21 @@
 (function () {
   'use strict';
 
+  /* ---------------------------------------------------------------------
+     AYARLAR
+     heroTitle / heroLead: null bırakırsan sitedeki metne DOKUNULMAZ (önerilen —
+     SEO açısından en güvenlisi, çünkü metin ham HTML'de kalır).
+     Metni değiştirmek istiyorsan ÖNCE panel editöründen denemelisin; orada
+     düzenlersen Google da görür. Buradan değiştirirsen metni sadece JS
+     çalıştıktan sonra görünür — Google render eder ama gecikmeli.
+     --------------------------------------------------------------------- */
+  var CONFIG = {
+    heroTitle: null,
+    // örnek:
+    // heroTitle: 'Followers, likes and views — <span class="ot-outline">delivered instantly.</span>',
+    heroLead: null
+  };
+
   // Sadece giriş yapılmamış sayfalarda çalış
   if (!document.body || !document.body.classList.contains('body-public')) return;
 
@@ -38,6 +53,20 @@
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+  })();
+
+  /* -----------------------------------------------------------------------
+     1b) Hero metni (yalnızca CONFIG'te doldurulmuşsa)
+     -------------------------------------------------------------------- */
+  (function heroText() {
+    if (CONFIG.heroTitle) {
+      var h1 = $('.block-signin-text__block-text-title h1');
+      if (h1) h1.innerHTML = CONFIG.heroTitle;
+    }
+    if (CONFIG.heroLead) {
+      var lead = $('.block-signin-text__block-text-description p');
+      if (lead) lead.innerHTML = CONFIG.heroLead;
+    }
   })();
 
   /* -----------------------------------------------------------------------
