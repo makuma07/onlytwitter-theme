@@ -1,0 +1,154 @@
+/* =========================================================================
+   OnlyTwitter — dark redesign overlay for PerfectPanel (theme_21)
+   v1.0  ·  onlytwitter.com
+   -------------------------------------------------------------------------
+   Ne yapar:
+     1. Yapışkan navbar'a cam efekti verir (scroll'da)
+     2. Hero'ya canlı istatistik rozeti ekler
+     3. Hero'nun altına platform şeridi (X, IG, TikTok, YT, FB, Telegram) ekler
+     4. Bloklara scroll-reveal animasyonu ekler
+     5. İstatistik sayılarını sayaç animasyonuyla gösterir + binlik ayırır
+
+   Ne YAPMAZ (kasıtlı):
+     - Giriş formuna, input name'lerine, CSRF alanına, action'a DOKUNMAZ
+     - Mevcut metinleri silmez, sadece ekler
+     - Panel içi (giriş yapılmış) sayfalarda çalışmaz
+
+   Not: Bu dosya ot-theme.css OLMADAN çalışmaz — ikisi birlikte yüklenmeli.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  // Sadece giriş yapılmamış sayfalarda çalış
+  if (!document.body || !document.body.classList.contains('body-public')) return;
+
+  document.documentElement.classList.add('ot-js');
+
+  var $  = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* -----------------------------------------------------------------------
+     1) Yapışkan navbar
+     -------------------------------------------------------------------- */
+  (function stickyNav() {
+    var nav = $('#block_46');
+    if (!nav) return;
+    var onScroll = function () {
+      nav.classList.toggle('ot-stuck', window.scrollY > 20);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  /* -----------------------------------------------------------------------
+     2) Hero rozeti — istatistikleri blok #block_98'den okur
+     -------------------------------------------------------------------- */
+  (function eyebrow() {
+    var title = $('.block-signin-text__block-text-title');
+    if (!title || $('.ot-eyebrow')) return;
+
+    var vals = $$('#block_98 .totals-card__count-value');
+    var services = vals[0] ? vals[0].textContent.trim() : '';
+    var orders   = vals[1] ? parseInt(vals[1].textContent.replace(/\D/g, ''), 10) : 0;
+
+    var label = [];
+    if (services) label.push(services + ' services');
+    if (orders)   label.push((orders / 1e6).toFixed(1) + 'M orders delivered');
+    if (!label.length) return;
+
+    var el = document.createElement('div');
+    el.className = 'ot-eyebrow';
+    el.innerHTML = '<i></i><span></span>';
+    el.querySelector('span').textContent = label.join(' · ');
+    title.parentNode.insertBefore(el, title);
+  })();
+
+  /* -----------------------------------------------------------------------
+     3) Platform şeridi — hero'nun hemen altına
+     -------------------------------------------------------------------- */
+  (function platformStrip() {
+    var hero = $('#block_56');
+    if (!hero || $('.ot-strip')) return;
+
+    var P = [
+      ['X (Twitter)', 'M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.25 6.93ZM17.61 20.64h2.04L6.49 3.24H4.3Z'],
+      ['Instagram',   'M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2Zm0 5.4a4.4 4.4 0 1 0 0 8.8 4.4 4.4 0 0 0 0-8.8Zm0 7.26a2.86 2.86 0 1 1 0-5.72 2.86 2.86 0 0 1 0 5.72Zm5.6-7.43a1.03 1.03 0 1 1-2.06 0 1.03 1.03 0 0 1 2.06 0Z'],
+      ['TikTok',      'M12.53.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07Z'],
+      ['YouTube',     'M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.87.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z'],
+      ['Facebook',    'M24 12.07C24 5.44 18.63.07 12 .07S0 5.44 0 12.07c0 5.99 4.39 10.95 10.13 11.85v-8.38H7.08v-3.47h3.05V9.43c0-3.01 1.79-4.67 4.53-4.67 1.31 0 2.69.24 2.69.24v2.95h-1.51c-1.49 0-1.96.93-1.96 1.87v2.25h3.33l-.53 3.47h-2.8v8.38C19.61 23.02 24 18.06 24 12.07Z'],
+      ['Telegram',    'M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm4.91 7.22c.1 0 .32.02.47.14a.5.5 0 0 1 .17.33c.02.09.04.3.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.23-.46-1.9-.9-1.06-.7-1.65-1.13-2.68-1.8-1.19-.78-.42-1.21.26-1.91.17-.19 3.24-2.98 3.3-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.1.02-1.79 1.14-5.06 3.34-.48.33-.91.49-1.3.48-.43 0-1.25-.24-1.87-.44-.75-.24-1.35-.37-1.3-.79.03-.21.33-.44.9-.66 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64Z']
+    ];
+
+    var items = P.map(function (p) {
+      return '<div class="ot-mq"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' +
+             p[1] + '"/></svg><b>' + p[0] + '</b></div>';
+    }).join('');
+
+    var strip = document.createElement('div');
+    strip.className = 'ot-strip';
+    // içerik iki kez basılır -> kesintisiz kayan şerit
+    strip.innerHTML = '<div class="ot-strip__label">Services for every major platform</div>' +
+                      '<div class="ot-marquee">' + items + items + '</div>';
+    hero.parentNode.insertBefore(strip, hero.nextSibling);
+  })();
+
+  /* -----------------------------------------------------------------------
+     4) Scroll reveal
+     -------------------------------------------------------------------- */
+  var targets = $$('#block_51, #block_55 .col-ed, #block_98 .totals, #block_50, ' +
+                   '#block_53 .how-it-works-col, #block_52, #block_57, #block_54, #block_58 .col-ed');
+
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('ot-in'); });
+    formatTotals(true);
+    return;
+  }
+
+  targets.forEach(function (el, i) {
+    el.classList.add('ot-rv');
+    el.style.transitionDelay = (i % 4) * 0.08 + 's';
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('ot-in');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+  targets.forEach(function (el) { io.observe(el); });
+
+  /* -----------------------------------------------------------------------
+     5) İstatistik sayaçları
+     -------------------------------------------------------------------- */
+  function formatTotals(instant) {
+    $$('#block_98 .totals-card__count-value').forEach(function (el) {
+      var target = parseInt(el.textContent.replace(/\D/g, ''), 10);
+      if (!target) return;
+
+      if (instant) { el.textContent = target.toLocaleString('en-US'); return; }
+
+      el.textContent = '0';
+      var dur = 1600, t0 = null;
+      var tick = function (now) {
+        if (t0 === null) t0 = now;
+        var p = Math.min((now - t0) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 4);
+        el.textContent = Math.round(target * eased).toLocaleString('en-US');
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  var totals = $('#block_98 .totals');
+  if (totals) {
+    var io2 = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      io2.disconnect();
+      formatTotals(false);
+    }, { threshold: 0.3 });
+    io2.observe(totals);
+  }
+})();

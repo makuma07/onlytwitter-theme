@@ -1,0 +1,543 @@
+/* =========================================================================
+   OnlyTwitter — dark redesign overlay for PerfectPanel (theme_21)
+   v1.0  ·  onlytwitter.com
+   -------------------------------------------------------------------------
+   Bu dosya panelin kendi CSS'ini SİLMEZ, üstüne yazar.
+   Panelin tüm renk sistemi :root üzerindeki --color-id-* değişkenlerinden
+   geliyor; aşağıda önce onları yeniden tanımlıyoruz (tek hamlede global
+   re-skin), sonra bileşenleri tek tek elden geçiriyoruz.
+
+   KAPSAM: .body-public  (giriş yapılmamış sayfalar)
+   Panel içini (sipariş ekranı) da koyu yapmak istersen:
+   ".body-public" yazan yeri "body" ile değiştir.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Manrope:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* -------------------------------------------------------------------------
+   1) RENK SİSTEMİ — panelin kendi değişkenlerini yeniden tanımla
+   ---------------------------------------------------------------------- */
+body.body-public{
+  --color-id-20: #07080A;              /* sayfa zemini            */
+  --color-id-21: #0E1116;              /* kart / beyaz yüzeyler   */
+  --color-id-26: #F2F4F7;              /* koyu metin -> açık      */
+  --color-id-32: #FFFFFF;              /* buton üstü metin        */
+  --color-id-29: #2E7CFF;              /* birincil (link/vurgu)   */
+  --color-id-25: #2E7CFF;
+  --color-id-14: #2E7CFF;
+  --color-id-31: #2A6FE8;              /* hover                   */
+  --color-id-33: #1F5FD6;              /* koyu birincil           */
+  --color-id-30: #68A7FF;
+  --color-id-27: linear-gradient(180deg,#3B87FF 0%,#2E7CFF 100%);
+  --color-id-22: rgba(255,255,255,.06);/* ince çizgi/gölge        */
+  --color-id-19: rgba(255,255,255,.10);
+  --color-id-13: rgba(46,124,255,.14);
+  --color-id-16: rgba(46,124,255,.28);
+  --color-id-23: rgba(255,255,255,.10);
+
+  /* kendi tasarım token'larımız */
+  --ot-ink:#07080A;
+  --ot-ink2:#0B0D12;
+  --ot-panel:rgba(255,255,255,.035);
+  --ot-panel2:rgba(255,255,255,.055);
+  --ot-line:rgba(255,255,255,.10);
+  --ot-line-soft:rgba(255,255,255,.06);
+  --ot-fg:#F4F6F8;
+  --ot-fg2:#A8AFBA;
+  --ot-fg3:#6E7783;
+  --ot-accent:#2E7CFF;
+  --ot-accent2:#68A7FF;
+  --ot-glow:rgba(46,124,255,.28);
+  --ot-r:18px;
+  --ot-ease:cubic-bezier(.22,.9,.28,1);
+}
+
+/* -------------------------------------------------------------------------
+   2) TEMEL — zemin, tipografi, grain
+   ---------------------------------------------------------------------- */
+body.body-public{
+  background:var(--ot-ink) !important;
+  color:var(--ot-fg) !important;
+  font-family:"Manrope",-apple-system,BlinkMacSystemFont,sans-serif !important;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.body-public::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;
+  opacity:.38;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+}
+
+.body-public h1,.body-public h2,.body-public h3,.body-public h4,
+.body-public .totals-card__count-value{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 700;
+  letter-spacing:-.032em !important;
+  line-height:1.04 !important;
+  color:var(--ot-fg) !important;
+}
+.body-public p,.body-public li,.body-public label{color:var(--ot-fg2)}
+.body-public a{color:var(--ot-accent2)}
+.body-public a:hover{color:#fff}
+
+/* blokların kendi zemin/dalga süslemelerini sustur */
+.body-public .block-bg{background:transparent !important;opacity:1 !important}
+.body-public .block-divider-bottom{display:none !important}
+.body-public [id^="block_"]{background:transparent !important}
+
+/* bloklara nefes payı */
+.body-public .wrapper-content__body > [id^="block_"]{padding-block:clamp(48px,7vw,96px)}
+.body-public #block_51,.body-public #block_50,.body-public #block_52,
+.body-public #block_54{padding-bottom:0}
+.body-public #block_55,.body-public #block_53,.body-public #block_57,
+.body-public #block_58{padding-top:34px}
+
+/* -------------------------------------------------------------------------
+   3) NAVBAR — cam efektli, yapışkan
+   ---------------------------------------------------------------------- */
+.body-public #block_46{
+  position:sticky;top:0;z-index:900;padding-block:0 !important;
+  transition:background .4s var(--ot-ease),border-color .4s;
+  border-bottom:1px solid transparent;
+}
+.body-public #block_46.ot-stuck{
+  background:rgba(7,8,10,.72) !important;
+  backdrop-filter:saturate(180%) blur(22px);
+  -webkit-backdrop-filter:saturate(180%) blur(22px);
+  border-bottom-color:var(--ot-line-soft);
+}
+.body-public .component-navbar__wrapper,
+.body-public .component-navbar{background:transparent !important;box-shadow:none !important;border:0 !important}
+.body-public #block_46 .navbar{padding:12px 0 !important;min-height:66px}
+
+.body-public .component-navbar-public-brand p,
+.body-public .component-navbar-public-brand strong,
+.body-public .component-navbar-public-brand span{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 78,"wght" 800;
+  font-size:17px !important;letter-spacing:.02em !important;
+  color:var(--ot-fg) !important;margin:0 !important;
+}
+.body-public .component-navbar-public-brand{
+  display:inline-flex;align-items:center;gap:9px;text-decoration:none !important;
+}
+.body-public .component-navbar-public-brand::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--ot-accent);
+  box-shadow:0 0 0 4px rgba(46,124,255,.18);flex:none;
+}
+
+.body-public .navbar-nav .nav-link,
+.body-public .navbar-nav a{
+  font-size:13.5px !important;color:var(--ot-fg2) !important;
+  position:relative;padding:6px 0 !important;margin-inline:14px;
+  transition:color .25s var(--ot-ease);
+}
+.body-public .navbar-nav a::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+  background:var(--ot-fg);transition:width .3s var(--ot-ease);
+}
+.body-public .navbar-nav a:hover{color:var(--ot-fg) !important}
+.body-public .navbar-nav a:hover::after{width:100%}
+.body-public .navbar-burger-line,
+.body-public .navbar-burger-line::before,
+.body-public .navbar-burger-line::after{background:var(--ot-fg) !important}
+.body-public .navbar-toggler{border:1px solid var(--ot-line) !important;border-radius:50% !important;width:42px;height:42px}
+
+/* mobil açılır menü */
+.body-public #block_46 .navbar-collapse.show,
+.body-public #block_46 .navbar-collapse.collapsing{
+  background:rgba(7,8,10,.98);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--ot-line-soft);
+  margin-top:12px;padding:8px 0 18px;border-radius:0 0 16px 16px;
+}
+
+/* -------------------------------------------------------------------------
+   4) HERO (#block_56)
+   ---------------------------------------------------------------------- */
+.body-public #block_56{
+  position:relative;overflow:hidden;
+  padding-top:clamp(56px,7vw,96px) !important;
+  padding-bottom:clamp(64px,8vw,110px) !important;
+}
+/* atmosfer: ışık huzmeleri + ince grid */
+.body-public #block_56::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(680px 520px at 8% -10%,var(--ot-glow),transparent 68%),
+    radial-gradient(620px 620px at 96% -18%,rgba(46,124,255,.16),transparent 68%);
+  filter:blur(10px);
+}
+.body-public #block_56::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:100% 96px,96px 100%;
+  -webkit-mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,#000 20%,transparent 78%);
+  mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,#000 20%,transparent 78%);
+}
+.body-public #block_56 > .container{position:relative;z-index:1}
+
+.body-public .block-signin-text__block-text-title h1{
+  font-size:clamp(38px,5.4vw,72px) !important;
+  font-variation-settings:"wdth" 88,"wght" 760;
+  margin:0 0 22px !important;max-width:16ch;
+}
+.body-public .block-signin-text__block-text-description p{
+  font-size:16.5px;line-height:1.66;font-weight:350;color:var(--ot-fg2) !important;
+  max-width:54ch;margin-bottom:14px;
+}
+.body-public .block-signin-text__block-text-description strong{color:var(--ot-fg)}
+.body-public .block-signin-text .row{align-items:center}
+
+/* -------------------------------------------------------------------------
+   5) KARTLAR + FORM (giriş kartı dahil)
+   NOT: form yapısına, name/action değerlerine DOKUNULMUYOR — sadece görünüm.
+   ---------------------------------------------------------------------- */
+.body-public .card,
+.body-public .component_card .card{
+  background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:26px !important;
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.85) !important;
+  padding:32px !important;
+}
+.body-public #block_56 .component_card .card{position:relative}
+.body-public #block_56 .component_card .card::before{
+  content:"";position:absolute;inset:0;border-radius:26px;padding:1px;pointer-events:none;
+  background:linear-gradient(150deg,rgba(46,124,255,.45),transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+
+.body-public .form-group label{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ot-fg3) !important;margin-bottom:8px;
+}
+.body-public .form-control,
+.body-public input[type=text],
+.body-public input[type=password],
+.body-public input[type=email],
+.body-public select,
+.body-public textarea{
+  background:rgba(7,8,10,.55) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:12px !important;
+  color:var(--ot-fg) !important;
+  height:48px;padding:0 15px;font-size:15px;
+  box-shadow:none !important;
+  transition:border-color .25s,box-shadow .25s;
+}
+.body-public textarea{height:auto;padding:14px 15px}
+.body-public .form-control::placeholder{color:var(--ot-fg3) !important}
+.body-public .form-control:focus{
+  border-color:rgba(46,124,255,.7) !important;
+  box-shadow:0 0 0 4px rgba(46,124,255,.14) !important;
+}
+.body-public .sign-in__forgot a{font-size:12px;color:var(--ot-fg3) !important}
+.body-public .sign-in__forgot a:hover{color:var(--ot-accent2) !important}
+
+/* butonlar */
+.body-public .btn{
+  border-radius:100px !important;
+  font-weight:600 !important;letter-spacing:-.01em;
+  border:1px solid transparent !important;
+  transition:transform .35s var(--ot-ease),box-shadow .35s,background .3s !important;
+}
+.body-public .btn:hover{transform:translateY(-2px)}
+.body-public .btn-big-primary,
+.body-public .btn-primary{
+  background:var(--ot-accent) !important;color:#fff !important;
+  box-shadow:0 10px 30px -10px var(--ot-glow) !important;
+  height:50px;
+}
+.body-public .btn-big-primary:hover,
+.body-public .btn-primary:hover{box-shadow:0 18px 40px -12px var(--ot-glow) !important}
+.body-public .btn-outline-primary,
+.body-public .btn-secondary{
+  background:transparent !important;color:var(--ot-fg) !important;
+  border-color:var(--ot-line) !important;
+}
+.body-public .btn-outline-primary:hover,
+.body-public .btn-secondary:hover{background:var(--ot-panel2) !important}
+.body-public .block-signin-text__sign-up-link{
+  color:var(--ot-fg) !important;border-bottom:1px solid var(--ot-line);margin-left:6px;
+}
+
+/* -------------------------------------------------------------------------
+   6) ÖZELLİK KARTLARI (#block_55)
+   ---------------------------------------------------------------------- */
+.body-public .features-block__card{
+  position:relative;overflow:hidden;
+  background:var(--ot-panel) !important;
+  border:1px solid var(--ot-line-soft) !important;
+  border-radius:var(--ot-r) !important;
+  padding:30px 26px 34px !important;
+  transition:transform .5s var(--ot-ease),border-color .4s var(--ot-ease);
+}
+.body-public .features-block__card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(46,124,255,.35) !important;
+}
+.body-public .features-block__card::before{
+  content:"";position:absolute;inset:-1px;border-radius:var(--ot-r);opacity:0;
+  background:radial-gradient(420px circle at 50% 0%,rgba(46,124,255,.16),transparent 60%);
+  transition:opacity .45s var(--ot-ease);pointer-events:none;
+}
+.body-public .features-block__card:hover::before{opacity:1}
+
+/* dev ikon kutusunu küçült, hizala */
+.body-public .features-block__header-preview{
+  width:44px !important;height:44px !important;
+  font-size:20px !important;
+  border-radius:13px !important;
+  background:var(--ot-panel2) !important;
+  border:1px solid var(--ot-line);
+  display:flex !important;align-items:center;justify-content:center;
+  margin-bottom:22px !important;
+}
+.body-public .feature-block__icon{
+  font-size:20px !important;color:var(--ot-accent2) !important;padding:0 !important;
+}
+.body-public .features-block__header-title,
+.body-public .features-block__header-title *{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 640;
+  font-size:18px !important;letter-spacing:-.02em !important;
+  color:var(--ot-fg) !important;
+}
+.body-public .features-block__card p{font-size:14.5px;line-height:1.6;font-weight:350}
+
+/* -------------------------------------------------------------------------
+   7) İSTATİSTİKLER (#block_98)
+   ---------------------------------------------------------------------- */
+.body-public #block_98 .totals{
+  border:1px solid var(--ot-line);border-radius:var(--ot-r);overflow:hidden;
+  background:linear-gradient(180deg,var(--ot-panel),transparent);
+}
+.body-public #block_98 .grid-ed{--gapSizeX:0px !important;--gapSizeY:0px !important}
+.body-public #block_98 .row-ed{margin:0 !important}
+.body-public #block_98 .col-ed{padding:0 !important}
+.body-public .totals-card{
+  padding:38px 30px !important;background:transparent !important;
+  border:0 !important;border-right:1px solid var(--ot-line-soft) !important;
+  border-radius:0 !important;box-shadow:none !important;text-align:left;
+}
+.body-public .totals-card__count-value{
+  font-variation-settings:"wdth" 80,"wght" 700;
+  font-size:clamp(28px,3.4vw,44px) !important;
+  letter-spacing:-.04em !important;margin:0 !important;
+  font-variant-numeric:tabular-nums;color:var(--ot-fg) !important;
+}
+.body-public .totals-card__name p{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:11px !important;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ot-fg3) !important;margin:12px 0 0 !important;
+}
+
+/* -------------------------------------------------------------------------
+   8) ADIMLAR (#block_53)
+   ---------------------------------------------------------------------- */
+.body-public .how-it-works-card{
+  background:none !important;border:0 !important;box-shadow:none !important;
+  text-align:center;padding:0 18px !important;
+  margin-top:0 !important;   /* panelin zig-zag hizasını düzleştir */
+}
+/* panelin kıvrık mavi okları yerine tek ince çizgi */
+.body-public .how-it-works-arrow-top,
+.body-public .how-it-works-arrow-bottom{display:none !important}
+.body-public .how-it-works-row{position:relative}
+.body-public .how-it-works-row::before{
+  content:"";position:absolute;top:27px;left:12%;right:12%;height:1px;z-index:0;
+  background:linear-gradient(90deg,transparent,var(--ot-line),var(--ot-line),transparent);
+}
+.body-public .how-it-works-preview{position:relative;z-index:1}
+.body-public .how-it-works-number{
+  width:54px !important;height:54px !important;
+  border-radius:50% !important;margin-bottom:22px;
+  background:var(--ot-ink) !important;
+  border:1px solid var(--ot-line) !important;
+  box-shadow:none !important;
+  display:flex !important;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:14px !important;color:var(--ot-fg2) !important;
+  transition:border-color .45s var(--ot-ease),box-shadow .45s var(--ot-ease);
+}
+.body-public .how-it-works-col:hover .how-it-works-number{
+  border-color:var(--ot-accent) !important;
+  box-shadow:0 0 0 6px rgba(46,124,255,.10) !important;
+}
+.body-public .how-it-works-title,
+.body-public .how-it-works-title *{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 640;
+  font-size:17px !important;letter-spacing:-.02em !important;
+  color:var(--ot-fg) !important;
+}
+.body-public .how-it-works-description p{font-size:14px;line-height:1.6;font-weight:350}
+
+/* -------------------------------------------------------------------------
+   9) YORUMLAR (#block_57)
+   ---------------------------------------------------------------------- */
+.body-public .reviews-slider__slide .card{
+  background:var(--ot-panel) !important;
+  border:1px solid var(--ot-line-soft) !important;
+  border-radius:var(--ot-r) !important;
+  padding:32px 28px !important;box-shadow:none !important;
+  backdrop-filter:none;transition:transform .5s var(--ot-ease),border-color .4s;
+  height:100%;
+}
+.body-public .reviews-slider__slide .card:hover{
+  transform:translateY(-5px);border-color:var(--ot-line) !important;
+}
+/* tırnak işareti rozeti */
+.body-public .reviews-slider__slide .card::before{
+  content:"\201C";display:block;
+  font-family:"Archivo",sans-serif;font-variation-settings:"wght" 800;
+  font-size:44px;line-height:.6;color:var(--ot-accent);opacity:.5;margin-bottom:18px;
+}
+.body-public .reviews-slider__slide-avatar{
+  width:38px !important;height:38px !important;border-radius:50% !important;
+  border:1px solid var(--ot-line);background-color:var(--ot-panel2) !important;
+  background-size:cover;
+}
+.body-public .reviews-slider__slide-name p,
+.body-public .reviews-slider__slide-name strong{
+  font-size:14.5px !important;font-weight:600 !important;
+  letter-spacing:-.01em;color:var(--ot-fg) !important;margin:0 !important;
+}
+.body-public .reviews-slider__slide-description p{
+  font-size:15px;line-height:1.7;font-weight:350;color:var(--ot-fg2) !important;
+}
+.body-public .slick-dots li button:before{color:var(--ot-fg3) !important;opacity:.5 !important}
+.body-public .slick-dots li.slick-active button:before{color:var(--ot-accent) !important;opacity:1 !important}
+.body-public .slick-prev:before,.body-public .slick-next:before{color:var(--ot-fg2) !important}
+
+/* -------------------------------------------------------------------------
+   10) SSS (#block_58)
+   ---------------------------------------------------------------------- */
+.body-public #block_58 .card{
+  background:transparent !important;border:0 !important;
+  border-bottom:1px solid var(--ot-line-soft) !important;
+  border-radius:0 !important;box-shadow:none !important;
+  padding:0 !important;backdrop-filter:none;
+}
+.body-public .faq-block__header{
+  padding:26px 4px !important;cursor:pointer;
+  display:flex;align-items:center;gap:20px;
+}
+.body-public .faq-block__header-title h4{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 92,"wght" 600;
+  font-size:clamp(16px,1.7vw,20px) !important;letter-spacing:-.02em !important;
+  color:var(--ot-fg) !important;margin:0 !important;transition:color .3s;
+}
+.body-public .faq-block__header:hover .faq-block__header-title h4{color:var(--ot-accent2) !important}
+/* + / x ikonu */
+.body-public .faq-block__header-icon{margin-left:auto}
+.body-public .faq-block__icon{
+  width:30px;height:30px;border-radius:50%;position:relative;
+  border:1px solid var(--ot-line);color:var(--ot-fg) !important;
+  transition:transform .45s var(--ot-ease),background .3s,border-color .3s;
+}
+.body-public .faq-block__icon::before,
+.body-public .faq-block__icon::after{
+  content:"";position:absolute;top:50%;left:50%;background:currentColor;
+  transform:translate(-50%,-50%);
+}
+.body-public .faq-block__icon::before{width:11px;height:1.5px}
+.body-public .faq-block__icon::after{width:1.5px;height:11px}
+.body-public .faq-block__header:not(.collapsed) .faq-block__icon{
+  transform:rotate(135deg);background:var(--ot-accent);border-color:transparent;color:#fff !important;
+}
+.body-public .faq-block__body-description{
+  padding:0 60px 28px 4px !important;
+}
+.body-public .faq-block__body-description p{
+  color:var(--ot-fg2) !important;font-size:15.5px;line-height:1.75;font-weight:350;margin:0;
+}
+
+/* -------------------------------------------------------------------------
+   11) FOOTER (#block_152)
+   ---------------------------------------------------------------------- */
+.body-public .wrapper-content__footer{
+  background:var(--ot-ink2) !important;
+  border-top:1px solid var(--ot-line-soft);
+}
+.body-public #block_152{padding-block:56px 40px !important}
+.body-public .footer p,.body-public .footer a{font-size:14px;color:var(--ot-fg3) !important}
+.body-public .footer a:hover{color:var(--ot-fg) !important}
+
+/* -------------------------------------------------------------------------
+   12) JS ile eklenen parçalar (ot-theme.js)
+   ---------------------------------------------------------------------- */
+/* rozet şeridi */
+.ot-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:7px 14px 7px 9px;border-radius:100px;margin-bottom:22px;
+  border:1px solid var(--ot-line);background:var(--ot-panel);
+  backdrop-filter:blur(10px);
+}
+.ot-eyebrow i{
+  width:6px;height:6px;border-radius:50%;background:#22C55E;display:block;
+  box-shadow:0 0 0 0 rgba(34,197,94,.55);animation:ot-pulse 2.4s infinite;
+}
+@keyframes ot-pulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+  70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+}
+.ot-eyebrow span{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ot-fg2);
+}
+
+/* platform şeridi */
+.ot-strip{
+  border-block:1px solid var(--ot-line-soft);
+  background:var(--ot-ink2);padding:26px 0;overflow:hidden;
+}
+.ot-strip__label{
+  text-align:center;margin-bottom:20px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ot-fg3);
+}
+.ot-marquee{display:flex;width:max-content;animation:ot-slide 34s linear infinite}
+.ot-marquee:hover{animation-play-state:paused}
+@keyframes ot-slide{to{transform:translateX(-50%)}}
+.ot-mq{
+  display:flex;align-items:center;gap:12px;padding:0 44px;
+  color:var(--ot-fg3);transition:color .3s var(--ot-ease);
+}
+.ot-mq:hover{color:var(--ot-fg)}
+.ot-mq svg{width:22px;height:22px;fill:currentColor}
+.ot-mq b{
+  font-family:"Archivo",sans-serif;font-variation-settings:"wdth" 84,"wght" 600;
+  font-size:16px;letter-spacing:-.01em;
+}
+
+/* scroll reveal */
+.ot-js .ot-rv{opacity:0;transform:translateY(26px);
+  transition:opacity .9s var(--ot-ease),transform .9s var(--ot-ease)}
+.ot-js .ot-rv.ot-in{opacity:1;transform:none}
+
+/* -------------------------------------------------------------------------
+   13) RESPONSIVE
+   ---------------------------------------------------------------------- */
+@media (max-width:991px){
+  .body-public .totals-card{border-right:0 !important;border-bottom:1px solid var(--ot-line-soft) !important}
+  .body-public .block-signin-text__block-text-title h1{max-width:none}
+}
+@media (max-width:575px){
+  .body-public .card,.body-public .component_card .card{padding:24px 20px !important;border-radius:22px !important}
+  .body-public .totals-card{padding:28px 22px !important}
+  .body-public .features-block__card{padding:26px 22px 30px !important}
+}
+@media (prefers-reduced-motion:reduce){
+  .body-public *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  .ot-js .ot-rv{opacity:1;transform:none}
+}
