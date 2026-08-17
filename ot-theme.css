@@ -102,6 +102,12 @@ body.body-public{
   --button_secondary_hover_background_color:var(--ot-panel2);
   --button_secondary_hover_border_color:var(--ot-line);
 
+  --table_thead_text_color:var(--ot-fg3);
+  --table_thead_background_color:var(--ot-panel2);
+  --table_tbody_text_color:var(--ot-fg2);
+  --table_tbody_background_color:transparent;
+  --table_tbody_border_color:var(--ot-line-soft);
+
   --code_background_color:var(--ot-ink2);
   --code_text_color:var(--ot-fg2);
   --modal_background_color:var(--ot-ink2);
@@ -130,6 +136,7 @@ body.body-public{
 }
 
 .body-public h1,.body-public h2,.body-public h3,.body-public h4,
+.body-public h5,.body-public h6,
 .body-public .totals-card__count-value{
   font-family:"Archivo",sans-serif !important;
   font-variation-settings:"wdth" 90,"wght" 700;
@@ -300,6 +307,18 @@ body.body-public{
   font-variation-settings:"wdth" 88,"wght" 760;
   margin:0 0 22px !important;max-width:16ch;
 }
+/* Panel editörü metinlere inline font-size basıyor (örn. <span style="font-size:37px">).
+   Bu, yukarıdaki clamp'i eziyordu — başlıklarda inline boyutu etkisizleştiriyoruz. */
+.body-public .block-signin-text__block-text-title h1 span,
+.body-public .block-signin-text__block-text-title h1 strong,
+.body-public .block-signin-text__block-text-description p span,
+.body-public .features-block__header-title span,
+.body-public .features-block__header-title strong,
+.body-public .how-it-works-title span,
+.body-public .how-it-works-title strong,
+.body-public .faq-block__header-title span{
+  font-size:inherit !important;line-height:inherit !important;
+}
 .body-public .block-signin-text__block-text-description p{
   font-size:16.5px;line-height:1.66;font-weight:350;color:var(--ot-fg2) !important;
   max-width:54ch;margin-bottom:14px;
@@ -319,7 +338,10 @@ body.body-public{
    5) KARTLAR + FORM (giriş kartı dahil)
    NOT: form yapısına, name/action değerlerine DOKUNULMUYOR — sadece görünüm.
    ---------------------------------------------------------------------- */
-.body-public .card,
+/* DİKKAT: Panel, grid sütunlarına da `card` sınıfı veriyor
+   (`.col-ed.md:col-ed-span-6.card`). Bu yüzden `.card` kuralından sütunları
+   ayıklıyoruz — yoksa özellik/istatistik kartları iç içe iki kutu olarak çıkar. */
+.body-public .card:not(.col-ed),
 .body-public .component_card .card{
   background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
   border:1px solid var(--ot-line) !important;
@@ -567,13 +589,16 @@ body.body-public{
 /* + / x ikonu */
 .body-public .faq-block__header-icon{margin-left:auto}
 .body-public .faq-block__icon{
-  width:30px;height:30px;border-radius:50%;position:relative;
+  width:30px !important;height:30px !important;flex:none;
+  border-radius:50%;position:relative;display:block;
   border:1px solid var(--ot-line);color:var(--ot-fg) !important;
+  font-size:0 !important;   /* panelin Font Awesome glyph'ini sustur */
   transition:transform .45s var(--ot-ease),background .3s,border-color .3s;
 }
 .body-public .faq-block__icon::before,
 .body-public .faq-block__icon::after{
-  content:"";position:absolute;top:50%;left:50%;background:currentColor;
+  content:"" !important;position:absolute;top:50%;left:50%;
+  background:currentColor;font-family:inherit !important;font-size:0 !important;
   transform:translate(-50%,-50%);
 }
 .body-public .faq-block__icon::before{width:11px;height:1.5px}
@@ -586,6 +611,126 @@ body.body-public{
 }
 .body-public .faq-block__body-description p{
   color:var(--ot-fg2) !important;font-size:15.5px;line-height:1.75;font-weight:350;margin:0;
+}
+
+/* -------------------------------------------------------------------------
+   10b) API SAYFASI (#block_api) + tablolar
+   Bootstrap tabloları kendi beyaz zeminini dayatıyor, onu eziyoruz.
+   ---------------------------------------------------------------------- */
+.body-public .table{
+  --bs-table-bg:transparent;
+  --bs-table-color:var(--ot-fg2);
+  --bs-table-striped-bg:rgba(255,255,255,.02);
+  --bs-table-striped-color:var(--ot-fg2);
+  --bs-table-border-color:var(--ot-line-soft);
+  background:transparent !important;
+  color:var(--ot-fg2) !important;
+  border-collapse:separate;border-spacing:0;
+  border:1px solid var(--ot-line) !important;
+  border-radius:var(--ot-r);overflow:hidden;margin-bottom:26px;
+}
+.body-public .table thead th{
+  background:var(--ot-panel2) !important;
+  color:var(--ot-fg3) !important;
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:500 !important;
+  border:0 !important;border-bottom:1px solid var(--ot-line) !important;
+  padding:14px 20px !important;
+}
+.body-public .table tbody td,
+.body-public .table tbody th{
+  background:transparent !important;
+  color:var(--ot-fg2) !important;
+  border:0 !important;border-bottom:1px solid var(--ot-line-soft) !important;
+  padding:14px 20px !important;font-size:14.5px;
+}
+.body-public .table tbody tr:last-child td{border-bottom:0 !important}
+.body-public .table tbody tr:hover td{background:var(--ot-panel) !important}
+/* ilk kolon = parametre adı -> mono ve vurgulu */
+.body-public #block_api .table tbody td:first-child{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:12.5px !important;color:var(--ot-accent2) !important;
+}
+
+.body-public #block_api{padding-block:clamp(48px,7vw,96px) !important}
+.body-public .block-api .bg,
+.body-public .block-api .divider-top,
+.body-public .block-api .divider-bottom{display:none !important}
+
+/* Panel API sayfasını .col-lg-6 içine sıkıştırıyor (sayfanın yarısı).
+   Diğer sayfalarla aynı genişliğe açıyoruz. */
+.body-public #block_api .container-fluid{
+  max-width:var(--maxw,1240px) !important;margin-inline:auto !important;
+  padding-inline:28px !important;
+}
+.body-public #block_api .col-lg-6{
+  flex:0 0 100% !important;max-width:100% !important;width:100% !important;
+}
+.body-public #block_api .card{
+  background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
+  border:1px solid var(--ot-line) !important;border-radius:26px !important;
+  padding:44px !important;box-shadow:var(--shadow) !important;
+}
+@media (max-width:575px){
+  .body-public #block_api .container-fluid{padding-inline:16px !important}
+  .body-public #block_api .card{padding:24px 20px !important}
+}
+.body-public #block_api h1,
+.body-public #block_api h2{
+  font-variation-settings:"wdth" 88,"wght" 740;
+  font-size:clamp(30px,4vw,46px) !important;margin:0 0 28px !important;
+}
+.body-public #block_api h3,
+.body-public #block_api h4{
+  font-variation-settings:"wdth" 90,"wght" 660;
+  font-size:20px !important;margin:36px 0 14px !important;
+}
+/* "Example response" gibi küçük etiketler — mono, sessiz */
+.body-public #block_api h5,
+.body-public #block_api h6{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.14em !important;
+  text-transform:uppercase;font-weight:500 !important;
+  color:var(--ot-fg3) !important;margin:26px 0 10px !important;
+}
+/* kod blokları — demo'daki kod penceresi görünümü
+   (üstte üç nokta + endpoint çubuğu; etiketi ot-theme.js yazıyor) */
+.body-public #block_api pre,
+.body-public pre{
+  position:relative;
+  background:var(--ot-ink) !important;
+  color:var(--ot-fg2) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:var(--ot-r) !important;
+  font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+  font-size:12.5px !important;line-height:1.85 !important;
+  padding:22px !important;overflow-x:auto;margin:0 0 26px;
+}
+/* başlık çubuğu — yalnızca JS etiket bastıysa */
+.body-public pre[data-ot-label]{padding-top:66px !important}
+.body-public pre[data-ot-label]::before{
+  content:attr(data-ot-label);
+  position:absolute;inset:0 0 auto 0;height:44px;
+  display:flex;align-items:center;padding-left:82px;
+  background:var(--ot-ink2);border-bottom:1px solid var(--ot-line-soft);
+  border-radius:var(--ot-r) var(--ot-r) 0 0;
+  font-size:11px;letter-spacing:.02em;color:var(--ot-fg3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:18px;
+}
+.body-public pre[data-ot-label]::after{
+  content:"";position:absolute;top:17px;left:22px;
+  width:10px;height:10px;border-radius:50%;background:var(--ot-line);
+  box-shadow:18px 0 0 var(--ot-line),36px 0 0 var(--ot-line);
+}
+/* sözdizimi renkleri — token'ları ot-theme.js sarıyor */
+.body-public .ot-k{color:var(--ot-accent2)}          /* anahtarlar */
+.body-public .ot-s{color:#4ADE80}                    /* metinler   */
+.body-public .ot-n,.body-public .ot-b{color:#F0B429} /* sayı/bool  */
+.body-public .ot-c{color:var(--ot-fg3);font-style:normal} /* yorum  */
+.body-public code{
+  font-family:"IBM Plex Mono",ui-monospace,monospace !important;
+  color:var(--ot-accent2) !important;background:transparent !important;
 }
 
 /* -------------------------------------------------------------------------

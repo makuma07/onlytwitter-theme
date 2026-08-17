@@ -122,6 +122,45 @@
   })();
 
   /* -----------------------------------------------------------------------
+     3b) API sayfası — kod bloklarına başlık çubuğu + sözdizimi renkleri
+     Sadece <pre> içeriğine dokunur; metin yine metin olarak kalır.
+     -------------------------------------------------------------------- */
+  (function apiCode() {
+    var pres = $$('#block_api pre');
+    if (!pres.length) return;
+
+    // Endpoint'i sayfanın kendi tablosundan oku
+    var endpoint = 'https://' + location.host + '/api/v2';
+    $$('#block_api td').forEach(function (td, i, all) {
+      if (/api url/i.test(td.textContent) && all[i + 1]) endpoint = all[i + 1].textContent.trim();
+    });
+
+    pres.forEach(function (pre) {
+      pre.setAttribute('data-ot-label', 'POST ' + endpoint);
+
+      var esc = pre.textContent
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      pre.innerHTML = esc.replace(
+        /("(?:\\.|[^"\\])*")(\s*:)?|(\/\/[^\n]*)|\b(true|false|null)\b|(-?\d+(?:\.\d+)?)/g,
+        function (m, str, colon, comment, bool, num) {
+          if (comment) return '<span class="ot-c">' + comment + '</span>';
+          if (str) {
+            return colon
+              ? '<span class="ot-k">' + str + '</span>' + colon
+              : '<span class="ot-s">' + str + '</span>';
+          }
+          if (bool) return '<span class="ot-b">' + bool + '</span>';
+          if (num)  return '<span class="ot-n">' + num + '</span>';
+          return m;
+        }
+      );
+    });
+  })();
+
+  /* -----------------------------------------------------------------------
      4) Scroll reveal
      -------------------------------------------------------------------- */
   var targets = $$('#block_51, #block_55 .col-ed, #block_98 .totals, #block_50, ' +
