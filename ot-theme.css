@@ -2534,3 +2534,12 @@ html:has(.body-internal){overflow-y:scroll}
   .ot-tkstats{grid-template-columns:1fr}
   .ot-tktabs{overflow-x:auto;gap:16px}
 }
+
+/* ---- Tickets: gizlenebilir form + başlık alt yazısı ---- */
+.body-internal .ticket-form.ot-collapsed{display:none}
+.ot-pagehead__sub{
+  grid-column:1;margin:8px 0 0 !important;
+  color:var(--ot-fg2) !important;font-size:14.5px;font-weight:350;
+}
+/* buton pagehead grid'inde sağda (pageheadCta stilini paylaşır) */
+.body-internal button.ot-pagehead__cta{border:0;cursor:pointer}

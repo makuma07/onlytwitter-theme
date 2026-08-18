@@ -475,6 +475,41 @@
         });
     })();
 
+    /* --- Tickets: form gizli, başlıkta "+ New Ticket" ile açılır --- */
+    (function newTicketToggle() {
+      var form = document.querySelector('.ticket-form');
+      var head = document.querySelector('.ot-pagehead');
+      if (!form || !head || head.querySelector('.ot-newticket')) return;
+
+      /* başlık altına karşılama satırı */
+      if (!head.querySelector('.ot-pagehead__sub')) {
+        var sub = document.createElement('p');
+        sub.className = 'ot-pagehead__sub';
+        sub.textContent = "Get help from our support team. We're here for you!";
+        head.appendChild(sub);
+      }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ot-pagehead__cta ot-newticket';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New Ticket';
+      head.appendChild(btn);
+
+      /* sunucu hata döndürdüyse form açık gelsin, yoksa gizli */
+      var hasError = !!form.querySelector('.alert:not([style*="display: none"]):not(.hidden)');
+      if (!hasError) form.classList.add('ot-collapsed');
+
+      btn.addEventListener('click', function () {
+        var closed = form.classList.toggle('ot-collapsed');
+        if (!closed) {
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var f = form.querySelector('select, input, textarea');
+          if (f) setTimeout(function () { f.focus(); }, 350);
+        }
+      });
+    })();
+
     /* --- Tickets listesi: mockup panosu (sayaçlar + sekmeler + kartlar) ---
        Sayfalama boş (tek sayfa) => satırlardan saymak DOĞRU toplam verir. --- */
     (function ticketsBoard() {
