@@ -475,6 +475,120 @@
         });
     })();
 
+    /* --- Tickets listesi: mockup panosu (sayaçlar + sekmeler + kartlar) ---
+       Sayfalama boş (tek sayfa) => satırlardan saymak DOĞRU toplam verir. --- */
+    (function ticketsBoard() {
+      var list = document.querySelector('.tickets-list');
+      if (!list || list.getAttribute('data-ot-board') === 'done') return;
+      var body = list.querySelector('tbody');
+      if (!body) return;
+      list.setAttribute('data-ot-board', 'done');
+      var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+
+      var rows = [].slice.call(body.querySelectorAll('tr')).map(function (tr) {
+        var a = tr.querySelector('a[href*="viewticket"]');
+        var cells = tr.cells;
+        if (!a || cells.length < 4) return null;
+        var last = cells[cells.length - 1];
+        return {
+          href: a.getAttribute('href'),
+          id: cells[0].textContent.trim(),
+          subject: a.textContent.trim(),
+          status: cells[2].textContent.trim(),
+          rel: last.textContent.trim(),
+          abs: last.getAttribute('title') || last.textContent.trim()
+        };
+      }).filter(Boolean);
+      if (!rows.length) return;
+
+      var KEY = function (s) { return s.toLowerCase().replace(/\s+/g, ' '); };
+      var count = function (k) {
+        return rows.filter(function (r) { return KEY(r.status) === k; }).length;
+      };
+      var nOpen = count('open') + count('pending'),
+          nAns = count('answered'),
+          nRes = count('resolved'),
+          nClosed = count('closed');
+
+      var ICON_CHAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M8 9h8M8 12h5"/></svg>';
+      var ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+      var ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+      var ICON_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>';
+
+      var stats = document.createElement('div');
+      stats.className = 'ot-tkstats';
+      stats.innerHTML =
+        '<div class="ot-tkstat ot-tkstat--open"><span class="ot-tkstat__ico">' + ICON_CHAT + '</span>' +
+          '<div><small>Open Tickets</small><b>' + nOpen + '</b><em>Requires your reply</em></div></div>' +
+        '<div class="ot-tkstat ot-tkstat--ans"><span class="ot-tkstat__ico">' + ICON_CHECK + '</span>' +
+          '<div><small>Answered</small><b>' + nAns + '</b><em>Waiting for your reply</em></div></div>' +
+        '<div class="ot-tkstat ot-tkstat--res"><span class="ot-tkstat__ico">' + ICON_CLOCK + '</span>' +
+          '<div><small>Resolved</small><b>' + nRes + '</b><em>Ticket closed</em></div></div>' +
+        '<div class="ot-tkstat ot-tkstat--all"><span class="ot-tkstat__ico">' + ICON_LIST + '</span>' +
+          '<div><small>All Tickets</small><b>' + rows.length + '</b><em>All time tickets</em></div></div>';
+
+      var TABS = [
+        ['all', 'All Tickets', rows.length],
+        ['open', 'Open', nOpen],
+        ['answered', 'Answered', nAns],
+        ['resolved', 'Resolved', nRes],
+        ['closed', 'Closed', nClosed]
+      ];
+      var tabs = document.createElement('div');
+      tabs.className = 'ot-tktabs';
+      tabs.innerHTML = TABS.map(function (t, i) {
+        return '<button type="button" class="ot-tktab' + (i ? '' : ' on') + '" data-f="' + t[0] + '">' +
+          esc(t[1]) + (t[0] !== 'all' && t[2] ? '<span class="ot-tktab__n">' + t[2] + '</span>' : '') +
+          '</button>';
+      }).join('');
+
+      var cards = document.createElement('div');
+      cards.className = 'ot-tkcards';
+      function pill(st) {
+        var k = KEY(st);
+        var cls = k === 'answered' ? 'ans' : (k === 'closed' ? 'closed'
+                : (k === 'resolved' ? 'res' : 'open'));
+        return '<span class="ot-tkpill ot-tkpill--' + cls + '">' + esc(st) + '</span>';
+      }
+      function paint(filter) {
+        cards.innerHTML = rows.filter(function (r) {
+          if (filter === 'all') return true;
+          var k = KEY(r.status);
+          if (filter === 'open') return k === 'open' || k === 'pending';
+          return k === filter;
+        }).map(function (r) {
+          var k = KEY(r.status);
+          var icoCls = k === 'answered' ? 'ans' : (k === 'closed' ? 'closed'
+                    : (k === 'resolved' ? 'res' : 'open'));
+          return '<a class="ot-tk" href="' + esc(r.href) + '">' +
+            '<span class="ot-tk__ico ot-tk__ico--' + icoCls + '">' + ICON_CHAT + '</span>' +
+            '<span class="ot-tk__main"><b>' + esc(r.subject) + '</b>' +
+              '<small>#' + esc(r.id) + '</small></span>' +
+            '<span class="ot-tk__side">' + pill(r.status) +
+              '<time title="' + esc(r.abs) + '">' + esc(r.rel) + '</time></span>' +
+            '</a>';
+        }).join('') || '<div class="ot-tk__empty">No tickets in this state.</div>';
+      }
+      paint('all');
+      tabs.addEventListener('click', function (e) {
+        var b = e.target.closest('.ot-tktab');
+        if (!b) return;
+        [].forEach.call(tabs.children, function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        paint(b.getAttribute('data-f'));
+      });
+
+      /* pano: arama kartının üstüne sayaçlar+sekmeler, tablonun yerine kartlar */
+      var searchCard = list.querySelector('.tickets-list__margin-search');
+      var tableWrap = list.querySelector('.tickets-list__margin-table') ||
+                      list.querySelector('.table-wr') || body.closest('table');
+      var anchor = searchCard || tableWrap;
+      anchor.parentNode.insertBefore(stats, anchor);
+      anchor.parentNode.insertBefore(tabs, anchor);
+      tableWrap.parentNode.insertBefore(cards, tableWrap);
+      tableWrap.style.display = 'none';
+    })();
+
     /* --- bilet görünümü: satırları thread başlıklarına dönüştür --- */
     (function ticketThread() {
       var dlg = document.querySelector('.ticket-dialog');

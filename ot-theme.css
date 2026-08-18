@@ -2439,3 +2439,98 @@ html:has(.body-internal){overflow-y:scroll}
   content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
   margin-right:8px;vertical-align:middle;background:var(--ot-fg3);
 }
+
+/* ---- Tickets panosu (mockup birebir) ---- */
+.ot-tkstats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 18px;
+}
+.ot-tkstat{
+  display:flex;align-items:center;gap:14px;
+  background:var(--ot-panel);border:1px solid var(--ot-line-soft);
+  border-radius:16px;padding:16px 18px;
+}
+.ot-tkstat__ico{
+  width:44px;height:44px;border-radius:50%;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.ot-tkstat__ico svg{width:20px;height:20px}
+.ot-tkstat--open .ot-tkstat__ico{background:rgba(46,124,255,.14);color:var(--ot-accent2)}
+.ot-tkstat--ans  .ot-tkstat__ico{background:rgba(74,222,128,.13);color:#4ADE80}
+.ot-tkstat--res  .ot-tkstat__ico{background:rgba(139,124,245,.14);color:#A79BF7}
+.ot-tkstat--all  .ot-tkstat__ico{background:rgba(240,180,41,.13);color:#F0B429}
+.ot-tkstat small{display:block;font-size:12.5px;color:var(--ot-fg2)}
+.ot-tkstat b{
+  display:block;font-family:"Archivo",sans-serif;
+  font-variation-settings:"wdth" 82,"wght" 700;
+  font-size:24px;line-height:1.15;color:var(--ot-fg);
+}
+.ot-tkstat em{display:block;font-style:normal;font-size:11.5px}
+.ot-tkstat--open em{color:var(--ot-accent2)}
+.ot-tkstat--ans  em{color:#4ADE80}
+.ot-tkstat--res  em{color:#A79BF7}
+.ot-tkstat--all  em{color:#F0B429}
+
+.ot-tktabs{
+  display:flex;gap:22px;align-items:center;
+  border-bottom:1px solid var(--ot-line-soft);
+  margin:0 0 16px;padding:0 2px;
+}
+.ot-tktab{
+  background:none;border:0;cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:12px 2px;font-size:14px;font-weight:600;color:var(--ot-fg3);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .2s;
+}
+.ot-tktab:hover{color:var(--ot-fg2)}
+.ot-tktab.on{color:var(--ot-fg);border-bottom-color:var(--ot-accent)}
+.ot-tktab__n{
+  font-size:10.5px;font-weight:700;color:#fff;
+  background:var(--ot-accent);border-radius:100px;padding:2px 8px;
+}
+
+.ot-tkcards{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ot-tk{
+  display:flex;align-items:center;gap:14px;
+  background:var(--ot-panel);border:1px solid var(--ot-line-soft);
+  border-radius:14px;padding:14px 16px;
+  text-decoration:none !important;
+  transition:background .25s,border-color .25s,transform .3s var(--ot-ease);
+}
+.ot-tk:hover{background:var(--ot-panel2);border-color:var(--ot-line);transform:translateY(-1px)}
+.ot-tk__ico{
+  width:42px;height:42px;border-radius:12px;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.ot-tk__ico svg{width:19px;height:19px}
+.ot-tk__ico--open{background:rgba(46,124,255,.13);color:var(--ot-accent2)}
+.ot-tk__ico--ans{background:rgba(74,222,128,.12);color:#4ADE80}
+.ot-tk__ico--res{background:rgba(139,124,245,.13);color:#A79BF7}
+.ot-tk__ico--closed{background:rgba(248,113,113,.12);color:#F87171}
+.ot-tk__main{min-width:0;flex:1}
+.ot-tk__main b{
+  display:block;color:var(--ot-fg);font-size:14.5px;font-weight:600;
+  letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.ot-tk__main small{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ot-fg3);
+}
+.ot-tk__side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+.ot-tk__side time{
+  font-size:12px;color:var(--ot-fg3);
+}
+.ot-tkpill{
+  font-size:11.5px;font-weight:600;border-radius:100px;padding:3px 11px;
+  border:1px solid transparent;
+}
+.ot-tkpill--open{color:var(--ot-accent2);border-color:rgba(46,124,255,.45);background:rgba(46,124,255,.08)}
+.ot-tkpill--ans{color:#4ADE80;border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.08)}
+.ot-tkpill--res{color:#A79BF7;border-color:rgba(139,124,245,.35);background:rgba(139,124,245,.08)}
+.ot-tkpill--closed{color:#F87171;border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.09)}
+.ot-tk__empty{color:var(--ot-fg3);padding:26px;text-align:center;font-size:14px}
+
+@media (max-width:991px){.ot-tkstats{grid-template-columns:1fr 1fr}}
+@media (max-width:575px){
+  .ot-tkstats{grid-template-columns:1fr}
+  .ot-tktabs{overflow-x:auto;gap:16px}
+}
