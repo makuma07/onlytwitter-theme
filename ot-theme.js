@@ -211,6 +211,19 @@
           var host = body.querySelector('[id^="block_"] .container, [id^="block_"] .container-fluid');
           if (host) host.insertBefore(head, host.firstChild);
           else body.insertBefore(head, body.firstChild);
+
+          /* Ana kart dar/ortalanmış bir kolondaysa (New order gibi) başlık
+             kartın sol kenarına hizalanır; tam genişlik sayfalarda 0 kalır. */
+          var alignHead = function () {
+            var card = body.querySelector('.component_card > .card');
+            if (!card || !head.isConnected) return;
+            head.style.paddingLeft = '0px';
+            var d = Math.round(card.getBoundingClientRect().left -
+                               head.getBoundingClientRect().left);
+            if (d > 8 && d < 600) head.style.paddingLeft = d + 'px';
+          };
+          alignHead();
+          window.addEventListener('resize', alignHead);
         }
       }
 

@@ -2208,3 +2208,14 @@ body.body-public,body.body-internal{
 .body-internal .table tbody td.ot-status.ot-st-wait{color:#F0B429 !important}
 .body-internal .table tbody td.ot-status.ot-st-part{color:#FACC15 !important}
 .body-internal .table tbody td.ot-status.ot-st-bad{color:#F87171 !important}
+
+/* ---- dikey ritim: her sayfa aynı yükseklikten başlar ----
+   Blokların panelden gelen değişken üst dolguları sıfırlanır; tek tip
+   aralık verilir. Başlığın kendi 36px'i böylece her sayfada tek ölçü olur. */
+.body-internal .wrapper-content__body > [id^="block_"]{
+  padding-top:14px !important;
+  padding-bottom:14px !important;
+}
+.body-internal .wrapper-content__body > [id^="block_"]:first-child{
+  padding-top:0 !important;
+}
