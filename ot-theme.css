@@ -599,9 +599,15 @@ body.body-public{
    ---------------------------------------------------------------------- */
 /* slick söküldükten sonra demo'daki 3'lü eşit yükseklikli grid */
 .body-public .ot-review-grid{
-  display:grid !important;grid-template-columns:repeat(3,1fr);gap:18px;
+  display:grid !important;grid-template-columns:repeat(3,1fr);gap:18px;width:100%;
 }
-.body-public .ot-review-grid .reviews-slider__slide{width:auto !important;display:block !important}
+.body-public .ot-review-grid .reviews-slider__slide{
+  width:auto !important;display:block !important;float:none !important;
+  min-width:0;height:auto !important;
+}
+@media (max-width:991px){
+  .body-public .ot-review-grid{grid-template-columns:1fr}
+}
 
 .body-public .reviews-slider__slide .card{
   background:var(--ot-panel) !important;

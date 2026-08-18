@@ -194,15 +194,46 @@
      1f) Yorum slider'ını demo'daki statik 3'lü grid'e çevir
      -------------------------------------------------------------------- */
   (function reviewsGrid() {
-    var box = $('.reviews-slider [data-slider]');
-    if (!box) return;
-    try {
-      var $q = window.jQuery;
-      if ($q && $q.fn && $q.fn.slick && $q(box).hasClass('slick-initialized')) {
-        $q(box).slick('unslick');
-      }
-    } catch (e) { /* slick yoksa grid yine de uygulanır */ }
-    box.classList.add('ot-review-grid');
+    /* Slick'in ne zaman kurulduğuna güvenmiyoruz: slaytları fiziksel olarak
+       çıkarıp temiz bir grid'e taşıyoruz. Fonksiyon idempotent — geç kurulan
+       slick'e karşı birkaç kez çağrılıyor. */
+    function rebuild() {
+      var box = $('.reviews-slider [data-slider]') || $('.reviews-slider');
+      if (!box || $('.ot-review-grid', box)) return;
+
+      try {
+        var $q = window.jQuery;
+        if ($q && $q.fn && $q.fn.slick && $q(box).hasClass('slick-initialized')) {
+          $q(box).slick('unslick');
+        }
+      } catch (e) { /* slick yoksa da devam */ }
+
+      // klonları ele, metne göre tekilleştir
+      var seen = {}, uniq = [];
+      $$('.reviews-slider__slide', box).forEach(function (s) {
+        if (s.closest && s.closest('.slick-cloned')) return;
+        var key = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+        if (!key || seen[key]) return;
+        seen[key] = 1;
+        uniq.push(s);
+      });
+      if (!uniq.length) return;
+
+      var grid = document.createElement('div');
+      grid.className = 'ot-review-grid';
+      uniq.forEach(function (s) {
+        s.removeAttribute('style');            // slick'in bıraktığı genişlikler
+        grid.appendChild(s);
+      });
+
+      box.removeAttribute('data-slider');      // slick tekrar kurmasın
+      box.innerHTML = '';
+      box.appendChild(grid);
+    }
+
+    rebuild();
+    setTimeout(rebuild, 400);
+    setTimeout(rebuild, 1500);
   })();
 
   /* -----------------------------------------------------------------------
