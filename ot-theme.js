@@ -199,7 +199,10 @@
        slick'e karşı birkaç kez çağrılıyor. */
     function rebuild() {
       var box = $('.reviews-slider [data-slider]') || $('.reviews-slider');
-      if (!box || $('.ot-review-grid', box)) return;
+      if (!box || box.getAttribute('data-ot-reviews') === 'done') return;
+      // eski sürümün bıraktığı sınıf/grid varsa temizle — yoksa iç içe iki
+      // grid oluşur ve kartlar üçte bire sıkışır
+      box.classList.remove('ot-review-grid');
 
       try {
         var $q = window.jQuery;
@@ -229,6 +232,7 @@
       box.removeAttribute('data-slider');      // slick tekrar kurmasın
       box.innerHTML = '';
       box.appendChild(grid);
+      box.setAttribute('data-ot-reviews', 'done');
     }
 
     rebuild();
