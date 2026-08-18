@@ -1495,7 +1495,9 @@ body.body-public,body.body-internal{
 /* ---- 14c) sidebar ---- */
 .body-internal .component-sidebar,
 .body-internal .sidebar-block__left{
-  background:var(--ot-ink2) !important;
+  background:color-mix(in srgb,var(--ot-ink2) 55%,transparent) !important;
+  backdrop-filter:saturate(160%) blur(18px);
+  -webkit-backdrop-filter:saturate(160%) blur(18px);
   border-right:1px solid var(--ot-line-soft) !important;
   box-shadow:none !important;
 }
@@ -1535,13 +1537,15 @@ body.body-public,body.body-internal{
 }
 
 /* ---- 14d) üst çubuk (private navbar) ---- */
+/* DİKKAT: #block_47 tüm kabuğu sarıyor ve sidebar da component_private_navbar
+   sınıfı taşıyor — genel bir "#block_47 .component_private_navbar" seçicisi
+   sidebar'ın zeminini de siliyordu. Yalnızca üst çubuk hedeflenir. */
 .body-internal .component-navbar__navbar-private,
-.body-internal .component-navbar-private__wrapper,
-.body-internal #block_47 .component_private_navbar{
+.body-internal #block_47 > .component-navbar-private__wrapper{
   background:transparent !important;box-shadow:none !important;border:0 !important;
 }
 .body-internal #block_47{
-  background:color-mix(in srgb,var(--ot-ink) 82%,transparent) !important;
+  background:color-mix(in srgb,var(--ot-ink) 55%,transparent) !important;
   backdrop-filter:saturate(180%) blur(18px);
   -webkit-backdrop-filter:saturate(180%) blur(18px);
   border-bottom:1px solid var(--ot-line-soft);
@@ -1692,20 +1696,22 @@ body.body-public,body.body-internal{
   transition:background-color 99999s ease-out;
 }
 
-/* ---- atmosfer: vitrindeki ışık + ızgara, içerik alanının tepesinde ---- */
-.body-internal .wrapper-content{position:relative;overflow:hidden}
-.body-internal .wrapper-content::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:520px;
-  pointer-events:none;
+/* ---- atmosfer: ışık + ızgara EN DIŞ kabukta — sidebar ve üst çubuğun
+   altından kesintisiz devam eder (sidebar yarı saydam cam ray olur) ---- */
+.body-internal .wrapper-sidebar-navbar{position:relative}
+.body-internal .wrapper-sidebar-navbar::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:600px;
+  pointer-events:none;z-index:0;
   background:
-    radial-gradient(560px 380px at 12% -8%,var(--ot-glow),transparent 68%),
-    radial-gradient(520px 420px at 92% -12%,rgba(46,124,255,.12),transparent 68%),
+    radial-gradient(620px 420px at 8% -8%,var(--ot-glow),transparent 68%),
+    radial-gradient(560px 440px at 92% -12%,rgba(46,124,255,.12),transparent 68%),
     linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
     linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
   background-size:auto,auto,100% 96px,96px 100%;
-  -webkit-mask-image:radial-gradient(ellipse 95% 75% at 50% 0%,#000 12%,transparent 78%);
-  mask-image:radial-gradient(ellipse 95% 75% at 50% 0%,#000 12%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 100% 78% at 50% 0%,#000 12%,transparent 80%);
+  mask-image:radial-gradient(ellipse 100% 78% at 50% 0%,#000 12%,transparent 80%);
 }
+.body-internal .wrapper-content{position:relative;overflow:hidden}
 
 /* ---- editoryal sayfa başlığı (ot-theme.js basar) ---- */
 .ot-pagehead{padding:38px 30px 4px}
@@ -1757,4 +1763,104 @@ body.body-public,body.body-internal{
 /* duyuru bloğu başlığı sayfa başlığıyla yarışmasın */
 .body-internal .text-block__title h2{
   font-size:clamp(18px,2vw,24px) !important;
+}
+
+/* =========================================================================
+   16) İÇ PANEL — cila turu (Vercel/Linear işi detaylar)
+   ========================================================================= */
+
+/* ---- üst çubuk: bakiye + Account + Logout sağa yaslanır ---- */
+@media (min-width:992px){
+  .body-internal #block_47 .navbar{width:100%;padding:8px 24px !important}
+  .body-internal #block_47 .navbar-collapse{flex:1 1 auto}
+  .body-internal #block_47 .component-navbar-collapse{
+    width:100%;justify-content:flex-end;align-items:center;
+  }
+}
+
+/* ---- içerik ritmi: uygulama içeriği 1280px'te toplanır ---- */
+.body-internal .wrapper-content__body > [id^="block_"] > .container-fluid{
+  max-width:1280px;margin-inline:auto;
+}
+.ot-pagehead{max-width:1280px;margin-inline:auto}
+
+/* boş footer bandı görünmesin */
+.body-internal .wrapper-content__footer:empty{display:none}
+
+/* ---- durum hücreleri: renkli nokta + metin (ot-theme.js etiketler) ---- */
+.body-internal td.ot-status{white-space:nowrap;font-weight:600;font-size:13px !important}
+.body-internal td.ot-status::before{
+  content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  margin-right:8px;vertical-align:middle;
+}
+.body-internal td.ot-st-ok{color:#4ADE80 !important}
+.body-internal td.ot-st-ok::before{background:#4ADE80;box-shadow:0 0 8px rgba(74,222,128,.5)}
+.body-internal td.ot-st-wait{color:#F0B429 !important}
+.body-internal td.ot-st-wait::before{background:#F0B429;box-shadow:0 0 8px rgba(240,180,41,.45)}
+.body-internal td.ot-st-part{color:#93C5FD !important}
+.body-internal td.ot-st-part::before{background:#93C5FD}
+.body-internal td.ot-st-bad{color:#F87171 !important}
+.body-internal td.ot-st-bad::before{background:#F87171}
+
+/* ---- mono hücreler: ID ve tarihler (ot-theme.js etiketler) ---- */
+.body-internal td.ot-mono{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:12px !important;color:var(--ot-fg3) !important;
+  white-space:nowrap;
+}
+
+/* ---- tablo içi uzun linkler tek satırda kısalır ---- */
+.body-internal .table td a:not(.btn){
+  display:inline-block;max-width:230px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  vertical-align:middle;
+}
+
+/* ---- Services: kategori şeridi ---- */
+.body-internal .services-list-category-title td{
+  background:var(--ot-panel2) !important;
+  border-top:1px solid var(--ot-line) !important;
+  border-bottom:1px solid var(--ot-line) !important;
+  padding:13px 16px !important;
+}
+.body-internal .services-list-category-title h4{
+  margin:0 !important;font-size:14.5px !important;
+  font-variation-settings:"wdth" 90,"wght" 650;
+  letter-spacing:-.01em !important;
+}
+.body-internal .services-category [class*="fa-"]{color:var(--ot-accent2);margin-right:6px}
+
+/* ---- Services: hücre tipografisi ---- */
+.body-internal .services-list td:nth-child(2){          /* ID */
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:12px !important;color:var(--ot-fg3) !important;
+}
+.body-internal .services-list td.table-service{          /* servis adı */
+  color:var(--ot-fg) !important;font-size:14px !important;
+}
+.body-internal .services-list td:nth-child(4){          /* fiyat */
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 84,"wght" 640;
+  font-size:15px !important;color:var(--ot-fg) !important;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+}
+.body-internal .services-list td:nth-child(5),
+.body-internal .services-list td:nth-child(6){          /* min–max */
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:12px !important;color:var(--ot-fg2) !important;
+}
+.body-internal .services-list td:nth-child(7){color:var(--ot-fg3) !important;font-size:13px !important}
+.body-internal .services-list .fa-star{color:var(--ot-fg3);transition:color .25s,transform .25s}
+.body-internal .services-list .fa-star:hover,
+.body-internal .services-list .fa-star.fas{color:#F0B429}
+
+/* ---- View / küçük aksiyon butonları: hayalet pill ---- */
+.body-internal .btn-actions{
+  background:transparent !important;color:var(--ot-fg) !important;
+  border:1px solid var(--ot-line) !important;
+  padding:6px 16px !important;font-size:13px !important;
+}
+.body-internal .btn-actions:hover{
+  background:var(--ot-accent) !important;color:#fff !important;
+  border-color:transparent !important;
 }

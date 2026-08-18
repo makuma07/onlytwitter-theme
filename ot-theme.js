@@ -178,6 +178,26 @@
 
       var first = body.querySelector('.component_card > .card');
       if (first) first.classList.add('ot-primary');
+
+      /* Tablo hücrelerini etiketle:
+         - durum metinleri -> renkli nokta (ot-st-*)
+         - sipariş no / tarih -> mono
+         Metinler değişmiyor, sadece sınıf ekleniyor. */
+      var ST = {
+        'completed':'ok','complete':'ok','success':'ok','active':'ok',
+        'enabled':'ok','new':'ok','awaiting':'wait','pending':'wait',
+        'processing':'wait','in progress':'wait','inprogress':'wait',
+        'queued':'wait','partial':'part','refunded':'part',
+        'canceled':'bad','cancelled':'bad','error':'bad','failed':'bad',
+        'disabled':'bad','expired':'bad','fail':'bad'
+      };
+      body.querySelectorAll('table td').forEach(function (td) {
+        if (td.children.length > 1) return;
+        var t = td.textContent.trim();
+        var key = t.toLowerCase();
+        if (ST[key]) { td.classList.add('ot-status', 'ot-st-' + ST[key]); return; }
+        if (/^\d{5,}$/.test(t) || /^\d{4}-\d{2}-\d{2}/.test(t)) td.classList.add('ot-mono');
+      });
     })();
   }
 
