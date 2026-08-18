@@ -358,6 +358,20 @@ body.body-public{
   -webkit-mask-composite:xor;mask-composite:exclude;
 }
 
+/* giriş kartı başlığı + güvenlik satırı (JS ekler) */
+.ot-login-head h3{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 88,"wght" 700;
+  letter-spacing:-.02em !important;font-size:22px !important;
+  margin:0 0 4px !important;color:var(--ot-fg) !important;
+}
+.ot-login-head p{margin:0 0 24px !important;font-size:13.5px;color:var(--ot-fg3) !important}
+.ot-login-secure{
+  margin-top:22px;padding-top:18px;border-top:1px solid var(--ot-line-soft);
+  display:flex;align-items:center;gap:9px;font-size:12px;color:var(--ot-fg3);
+}
+.ot-login-secure svg{width:14px;height:14px;flex:none}
+
 .body-public .form-group label{
   font-family:"IBM Plex Mono",monospace !important;
   font-size:10.5px !important;letter-spacing:.15em;text-transform:uppercase;
@@ -449,6 +463,11 @@ body.body-public{
 .body-public #block_54 .header-with-text{margin-inline:auto}
 .body-public #block_50 .text-block__description p,
 .body-public #block_54 .text-block__description p{margin-inline:auto !important}
+/* kicker de ortalansın — yoksa başlık ortada, etiket solda kalıyor */
+.body-public #block_50 .ot-kicker,
+.body-public #block_54 .ot-kicker{text-align:center}
+.body-public #block_50 h2,.body-public #block_50 p,
+.body-public #block_54 h2,.body-public #block_54 p{text-align:center !important}
 
 /* -------------------------------------------------------------------------
    6) ÖZELLİK KARTLARI (#block_55)
@@ -578,6 +597,12 @@ body.body-public{
 /* -------------------------------------------------------------------------
    9) YORUMLAR (#block_57)
    ---------------------------------------------------------------------- */
+/* slick söküldükten sonra demo'daki 3'lü eşit yükseklikli grid */
+.body-public .ot-review-grid{
+  display:grid !important;grid-template-columns:repeat(3,1fr);gap:18px;
+}
+.body-public .ot-review-grid .reviews-slider__slide{width:auto !important;display:block !important}
+
 .body-public .reviews-slider__slide .card{
   background:var(--ot-panel) !important;
   border:1px solid var(--ot-line-soft) !important;
@@ -585,6 +610,11 @@ body.body-public{
   padding:32px 28px !important;box-shadow:none !important;
   backdrop-filter:none;transition:transform .5s var(--ot-ease),border-color .4s;
   height:100%;
+  /* tırnak · metin · (avatar + isim) — demo düzeni */
+  display:grid !important;
+  grid-template-columns:auto 1fr;
+  grid-template-areas:"quote quote" "desc desc" "photo name";
+  align-content:start;
 }
 .body-public .reviews-slider__slide .card:hover{
   transform:translateY(-5px);border-color:var(--ot-line) !important;
@@ -612,16 +642,19 @@ body.body-public{
   font-family:"Archivo",sans-serif;font-variation-settings:"wght" 700;
   font-size:14px;color:#fff;letter-spacing:.01em;
 }
-/* isim + rol satırı altta, demo düzeni */
+/* grid alanları */
+.body-public .reviews-slider__slide .card::before{grid-area:quote}
+.body-public .reviews-slider__slide-description{grid-area:desc;margin-bottom:20px}
 .body-public .reviews-slider__slide-photo{
-  order:2;margin:0 !important;align-items:center;gap:12px;
+  grid-area:photo;margin:0 !important;align-items:center;
   padding-top:18px;border-top:1px solid var(--ot-line-soft);
 }
-.body-public .reviews-slider__slide .card{display:flex;flex-direction:column}
-.body-public .reviews-slider__slide-description{order:1;flex:1}
 .body-public .reviews-slider__slide-name{
-  order:2;margin:0 0 0 12px !important;align-self:center;
+  grid-area:name;margin:0 !important;align-self:center;
+  padding:18px 0 0 12px;border-top:1px solid var(--ot-line-soft);
+  text-align:left !important;
 }
+.body-public .reviews-slider__slide-name p{text-align:left !important}
 .body-public .reviews-slider__slide-name p,
 .body-public .reviews-slider__slide-name strong{
   font-size:14.5px !important;font-weight:600 !important;
@@ -883,19 +916,24 @@ body.body-public{
   margin:14px 0 0;color:var(--ot-fg);
 }
 .ot-lead{margin:18px 0 0;color:var(--ot-fg2);font-size:16.5px;font-weight:350;max-width:52ch}
-.ot-btn{
+/* NOT: `.body-public a{color:...}` kuralı `.ot-btn`den daha özgül olduğu için
+   buton metinleri mavi kalıyordu (dolu butonda mavi-üstü-mavi = görünmez).
+   Bu yüzden buton renkleri .body-public ile birlikte yazılıyor. */
+.body-public .ot-btn,
+.body-public a.ot-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
   height:52px;padding:0 28px;border-radius:100px;
   font-size:15px;font-weight:600;letter-spacing:-.01em;
-  border:1px solid var(--ot-line);color:var(--ot-fg);text-decoration:none;
+  border:1px solid var(--ot-line);color:var(--ot-fg) !important;text-decoration:none;
   transition:transform .35s var(--ot-ease),background .3s,box-shadow .35s;
 }
-.ot-btn:hover{transform:translateY(-2px);background:var(--ot-panel2);color:var(--ot-fg)}
-.ot-btn--solid{
-  background:var(--ot-accent);color:#fff;border-color:transparent;
+.body-public .ot-btn:hover{transform:translateY(-2px);background:var(--ot-panel2)}
+.body-public .ot-btn--solid,
+.body-public a.ot-btn--solid{
+  background:var(--ot-accent);color:#fff !important;border-color:transparent;
   box-shadow:0 10px 30px -10px var(--ot-glow);
 }
-.ot-btn--solid:hover{background:var(--ot-accent);color:#fff;box-shadow:0 18px 40px -12px var(--ot-glow)}
+.body-public .ot-btn--solid:hover{background:var(--ot-accent);box-shadow:0 18px 40px -12px var(--ot-glow)}
 
 /* ---- API tanıtımı ---- */
 .ot-api{display:grid;grid-template-columns:.9fr 1.1fr;gap:52px;align-items:center}

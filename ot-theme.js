@@ -148,6 +148,59 @@
   })();
 
   /* -----------------------------------------------------------------------
+     1d) Giriş kartını demo'daki hale getir
+     Forma, input name'lerine ve CSRF alanına DOKUNULMUYOR — sadece başlık,
+     placeholder ve alt bilgi ekleniyor.
+     -------------------------------------------------------------------- */
+  (function loginCard() {
+    var card = $('#block_56 .component_card .card');
+    if (!card || $('.ot-login-head', card)) return;
+
+    var head = document.createElement('div');
+    head.className = 'ot-login-head';
+    head.innerHTML = '<h3>Sign in</h3><p>Welcome back. Pick up where you left off.</p>';
+    card.insertBefore(head, card.firstChild);
+
+    var u = $('input[name="LoginForm[username]"]', card);
+    var p = $('input[name="LoginForm[password]"]', card);
+    if (u && !u.placeholder) u.placeholder = 'yourname';
+    if (p && !p.placeholder) p.placeholder = '••••••••';
+
+    var sec = document.createElement('div');
+    sec.className = 'ot-login-secure';
+    sec.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">' +
+      '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>' +
+      '<span>We never ask for your social account password.</span>';
+    card.appendChild(sec);
+  })();
+
+  /* -----------------------------------------------------------------------
+     1e) İstatistikleri demo'daki yere taşı (özellik bölümünün ÜSTÜNE)
+     -------------------------------------------------------------------- */
+  (function moveTotals() {
+    var totals = $('#block_98'), before = $('#block_51');
+    if (totals && before && totals.compareDocumentPosition(before) & Node.DOCUMENT_POSITION_PRECEDING) {
+      before.parentNode.insertBefore(totals, before);
+    }
+  })();
+
+  /* -----------------------------------------------------------------------
+     1f) Yorum slider'ını demo'daki statik 3'lü grid'e çevir
+     -------------------------------------------------------------------- */
+  (function reviewsGrid() {
+    var box = $('.reviews-slider [data-slider]');
+    if (!box) return;
+    try {
+      var $q = window.jQuery;
+      if ($q && $q.fn && $q.fn.slick && $q(box).hasClass('slick-initialized')) {
+        $q(box).slick('unslick');
+      }
+    } catch (e) { /* slick yoksa grid yine de uygulanır */ }
+    box.classList.add('ot-review-grid');
+  })();
+
+  /* -----------------------------------------------------------------------
      2) Hero rozeti — istatistikleri blok #block_98'den okur
      -------------------------------------------------------------------- */
   (function eyebrow() {
