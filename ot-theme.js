@@ -217,6 +217,13 @@
       var first = body.querySelector('.component_card > .card');
       if (first) first.classList.add('ot-primary');
 
+      /* 9+ kolonlu tablolar (drip-feed vb.) yoğun moda geçer — yoksa
+         yatay kaydırma çıkıp son kolonu kesiyor */
+      [].slice.call(body.querySelectorAll('table')).forEach(function (tb) {
+        var hr = tb.querySelector('thead tr');
+        if (hr && hr.children.length >= 9) tb.classList.add('ot-dense');
+      });
+
       /* Tablo hücrelerini etiketle:
          - durum metinleri -> renkli nokta (ot-st-*)
          - sipariş no / tarih -> mono
