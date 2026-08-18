@@ -836,9 +836,19 @@ body.body-public{
 }
 .ot-endpoint:hover{border-color:var(--ot-line)}
 .ot-endpoint__head{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.body-public .ot-endpoint__head h4{
+/* DİKKAT: yukarıdaki `#block_api h4{margin:36px...}` kuralı ID taşıdığı için
+   daha özgül. Aynı ID'yi burada da kullanmazsak başlık 36px aşağı kayıyor ve
+   dikey ortalanan POST rozeti başlığın üstünde kalıyor. */
+.body-public #block_api .ot-endpoint__head h4{
   margin:0 !important;font-size:19px !important;
   font-variation-settings:"wdth" 90,"wght" 660;
+  line-height:1.2 !important;
+}
+/* Aynı sebeple: "Example response" etiketinin 26px üst boşluğu sağ sütunu
+   sol sütundaki tablodan aşağı kaydırıyordu. */
+.body-public #block_api .ot-endpoint__body h5,
+.body-public #block_api .ot-endpoint__body h6{
+  margin-top:0 !important;margin-bottom:10px !important;
 }
 .ot-endpoint__head::before{
   content:"POST";flex:none;
