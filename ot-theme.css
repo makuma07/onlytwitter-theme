@@ -865,14 +865,57 @@ body.body-public{
 .ot-endpoint__body{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   grid-template-rows:auto 1fr;
-  gap:10px 22px;align-items:start;
+  gap:0 22px;align-items:stretch;   /* iki sütun aynı yerde bitsin */
+}
+/* Çerçeveyi tablodan sarmalayıcıya alıyoruz: sarmalayıcı esneyip kod
+   bloğuyla aynı boyda biterken satırlar üstte doğal yükseklikte kalır.
+   (Tabloyu esnetseydik satır araları açılıp çirkin dururdu.) */
+.body-public #block_api .ot-endpoint__body > *:nth-child(1){
+  height:100%;
+  border:1px solid var(--ot-line);border-radius:var(--ot-r);overflow:hidden;
+}
+.body-public #block_api .ot-endpoint__body > *:nth-child(1) .table{
+  border:0 !important;border-radius:0 !important;margin:0 !important;
+  height:auto;
+}
+/* kod bloğu da satırın tamamını kaplasın */
+.body-public #block_api .ot-endpoint__body pre{height:100%}
+/* Sağ sütundaki "Example response" etiketini kod penceresinin başlık şeridi
+   yapıyoruz: soldaki tablonun thead'iyle birebir aynı kutu (14/20 dolgu),
+   böylece iki sütunun başlıkları aynı çizgide başlıyor. */
+.body-public #block_api .ot-endpoint__body > *:nth-child(2){
+  display:flex;align-items:center;
+  background:var(--ot-panel2);
+  border:1px solid var(--ot-line);border-bottom:0;
+  border-radius:var(--ot-r) var(--ot-r) 0 0;
+  padding:14px 20px !important;margin:0 !important;
+}
+.body-public #block_api .ot-endpoint__body > *:nth-child(2) h5,
+.body-public #block_api .ot-endpoint__body > *:nth-child(2) h6{
+  margin:0 !important;
+}
+/* kod bloğu artık etiketin devamı — üst köşeler düz, kendi başlık çubuğu yok */
+.body-public #block_api .ot-endpoint__body pre{
+  border-radius:0 0 var(--ot-r) var(--ot-r) !important;
+  border-top:0 !important;padding-top:20px !important;
+}
+.body-public #block_api .ot-endpoint__body pre[data-ot-label]::before,
+.body-public #block_api .ot-endpoint__body pre[data-ot-label]::after{
+  display:none !important;
 }
 .ot-endpoint__body > *:nth-child(1){grid-column:1;grid-row:1 / span 2}
 .ot-endpoint__body > *:nth-child(2){grid-column:2;grid-row:1}
 .ot-endpoint__body > *:nth-child(3){grid-column:2;grid-row:2}
 .body-public .ot-endpoint__body .table{margin-bottom:0}
 .body-public .ot-endpoint__body pre{margin-bottom:0}
+/* "Example of PHP code" butonu: panelin .btn kuralı kenarlığı şeffaf yapıyor
+   (!important taşıyor), o yüzden burada geri veriyoruz. */
 .ot-apitail{margin-top:34px}
+.body-public .ot-apitail .btn{
+  border:1px solid var(--ot-line) !important;
+  background:transparent !important;color:var(--ot-fg) !important;
+}
+.body-public .ot-apitail .btn:hover{background:var(--ot-panel2) !important}
 
 @media (max-width:900px){
   .ot-endpoint__body{grid-template-columns:1fr}
