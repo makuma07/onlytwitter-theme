@@ -2054,10 +2054,8 @@ body.body-public,body.body-internal{
 
 /* Services: satır sonu aksiyonları — View (hayalet) + sepet ikonu (dolu),
    tek hizada yan yana */
-.body-internal td.ot-actions{
-  display:flex;align-items:center;justify-content:flex-end;gap:8px;
-  border-bottom:0 !important;
-}
+.body-internal td.ot-actions{text-align:right;white-space:nowrap}
+.ot-actrow{display:inline-flex;align-items:center;gap:8px;vertical-align:middle}
 .body-internal td.ot-actions .btn-actions{margin:0 !important}
 .body-internal .ot-order-btn{
   height:34px;flex:none;padding:0 16px;

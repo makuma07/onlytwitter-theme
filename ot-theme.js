@@ -414,7 +414,17 @@
             '<circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/>' +
             '<path d="M3 4h2l2.2 11h11l1.8-7H7"/><path d="M13 6h4M15 4v4"/></svg>';
         }
-        cell.appendChild(a);
+        /* View + Create tek flex sarmalayıcıda: hücre display'i bozulmaz,
+           satır çizgisi ve dikey hiza korunur */
+        var row = cell.querySelector('.ot-actrow');
+        if (!row) {
+          row = document.createElement('span');
+          row.className = 'ot-actrow';
+          var view = cell.querySelector('.btn');
+          if (view) row.appendChild(view);
+          cell.appendChild(row);
+        }
+        row.appendChild(a);
         cell.classList.add('ot-actions');
       });
     })();
