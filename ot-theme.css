@@ -533,6 +533,7 @@ body.body-public{
   border:1px solid var(--ot-line);border-radius:var(--ot-r);overflow:hidden;
   background:linear-gradient(180deg,var(--ot-panel),transparent);
 }
+.body-public #block_98{margin-top:90px !important;margin-bottom:50px !important}
 .body-public #block_98 .grid-ed{--gapSizeX:0px !important;--gapSizeY:0px !important}
 .body-public #block_98 .row-ed{margin:0 !important}
 .body-public #block_98 .col-ed{padding:0 !important}
@@ -619,8 +620,10 @@ body.body-public{
   /* tırnak · metin · (avatar + isim) — demo düzeni */
   display:grid !important;
   grid-template-columns:auto 1fr;
+  /* orta satır esner -> isim/avatar satırı her kartta dibe yaslanır,
+     böylece kartlar arasında aynı hizada durur */
+  grid-template-rows:auto 1fr auto;
   grid-template-areas:"quote quote" "desc desc" "photo name";
-  align-content:start;
 }
 .body-public .reviews-slider__slide .card:hover{
   transform:translateY(-5px);border-color:var(--ot-line) !important;
