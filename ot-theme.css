@@ -2052,8 +2052,8 @@ body.body-public,body.body-internal{
 }
 
 /* sayfa başlığı artık içerik konteynerinin İÇİNDE — kendi genişliği olmaz */
-.ot-pagehead{max-width:none;margin:0;padding:36px 0 6px}
-@media (max-width:575px){.ot-pagehead{padding:26px 0 0}}
+.ot-pagehead{max-width:none;margin:0;padding:36px 0 16px}
+@media (max-width:575px){.ot-pagehead{padding:26px 0 10px}}
 
 /* Services: satır sonu aksiyonları — View (hayalet) + sepet ikonu (dolu),
    tek hizada yan yana */
@@ -2177,3 +2177,34 @@ body.body-public,body.body-internal{
   white-space:normal;font-size:11.5px !important;   /* tarih iki satıra kırılabilir */
 }
 .body-internal table.ot-dense td a:not(.btn):not(.ot-order-btn){max-width:140px}
+
+/* ---- durum renk/boşluk düzeltmeleri + sakin tablo linkleri ---- */
+/* Partial: mavi yerine sarı nokta */
+.body-internal td.ot-st-part{color:#FACC15 !important}
+.body-internal td.ot-st-part::before{background:#FACC15;box-shadow:0 0 8px rgba(250,204,21,.45)}
+
+/* durum yanındaki mesaj/not ikonu yapışmasın */
+.body-internal td.ot-status i,
+.body-internal td.ot-status [class*="fa-"]{margin-left:6px}
+
+/* tablo linkleri: düz maviyi bırak — sessiz renk + ince alt çizgi
+   (link olduğu çizgiden belli; hover'da maviye döner) */
+.body-internal .table td a:not(.btn):not(.ot-order-btn){
+  color:var(--ot-fg2) !important;
+  text-decoration:underline !important;
+  text-decoration-color:rgba(255,255,255,.22);
+  text-underline-offset:3px;
+  transition:color .2s,text-decoration-color .2s;
+}
+.body-internal .table td a:not(.btn):not(.ot-order-btn):hover{
+  color:var(--ot-accent2) !important;
+  text-decoration-color:color-mix(in srgb,var(--ot-accent2) 55%,transparent);
+}
+
+/* Durum METİN renkleri: genel ".table tbody td" kuralı (0,2,2) durum
+   kurallarını (0,2,1) eziyordu — bugüne dek yalnız noktalar renkliydi.
+   Daha özgül seçicilerle metinler de renklenir. */
+.body-internal .table tbody td.ot-status.ot-st-ok{color:#4ADE80 !important}
+.body-internal .table tbody td.ot-status.ot-st-wait{color:#F0B429 !important}
+.body-internal .table tbody td.ot-status.ot-st-part{color:#FACC15 !important}
+.body-internal .table tbody td.ot-status.ot-st-bad{color:#F87171 !important}
