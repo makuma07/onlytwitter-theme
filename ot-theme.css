@@ -301,9 +301,14 @@ body.body-public{
 /* -------------------------------------------------------------------------
    4) HERO (#block_56)
    ---------------------------------------------------------------------- */
+/* Hero, navbar'ın ALTINA kadar uzanır: demo'da menü hero'nun üstünde yüzüyor,
+   panelde ise ayrı bir blok olduğu için üstte ışıksız düz bir bant kalıyordu.
+   Negatif margin ile yukarı çekip aynı miktarda üst dolgu veriyoruz. */
+.body-public{--ot-nav-h:67px}
 .body-public #block_56{
   position:relative;overflow:hidden;
-  padding-top:clamp(56px,7vw,96px) !important;
+  margin-top:calc(var(--ot-nav-h) * -1);
+  padding-top:calc(var(--ot-nav-h) + clamp(56px,7vw,96px)) !important;
   padding-bottom:clamp(64px,8vw,110px) !important;
 }
 /* atmosfer: ışık huzmeleri + ince grid */
