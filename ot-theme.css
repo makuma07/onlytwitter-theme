@@ -813,10 +813,58 @@ body.body-public{
 .body-public #block_api .col-lg-6{
   flex:0 0 100% !important;max-width:100% !important;width:100% !important;
 }
+/* Tek dev kart yerine: üstte hero, altta her endpoint kendi kartında */
 .body-public #block_api .card{
-  background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
-  border:1px solid var(--ot-line) !important;border-radius:26px !important;
-  padding:44px !important;box-shadow:var(--shadow) !important;
+  background:transparent !important;border:0 !important;border-radius:0 !important;
+  padding:0 !important;box-shadow:none !important;backdrop-filter:none !important;
+}
+.ot-apihero{
+  position:relative;padding:8px 0 56px;margin-bottom:8px;
+  border-bottom:1px solid var(--ot-line-soft);
+}
+.ot-apihero .ot-h2{max-width:16ch}
+.ot-apihero .ot-lead{margin-bottom:34px}
+/* genel bakış tablosu -> etiket/değer satırları */
+.body-public .ot-apihero .table-responsive{max-width:640px}
+.body-public .ot-apihero .table{border-radius:var(--ot-r)}
+
+/* endpoint kartı */
+.ot-endpoint{
+  border:1px solid var(--ot-line-soft);border-radius:var(--ot-r);
+  background:var(--ot-panel);padding:28px;margin-top:18px;
+  transition:border-color .4s var(--ot-ease);
+}
+.ot-endpoint:hover{border-color:var(--ot-line)}
+.ot-endpoint__head{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.body-public .ot-endpoint__head h4{
+  margin:0 !important;font-size:19px !important;
+  font-variation-settings:"wdth" 90,"wght" 660;
+}
+.ot-endpoint__head::before{
+  content:"POST";flex:none;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  color:var(--ot-accent2);border:1px solid color-mix(in srgb,var(--ot-accent) 40%,transparent);
+  background:color-mix(in srgb,var(--ot-accent) 12%,transparent);
+  padding:4px 9px;border-radius:6px;
+}
+/* solda parametreler, sağda örnek yanıt */
+.ot-endpoint__body{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:22px;align-items:start;
+}
+.ot-endpoint__body > *:nth-child(1){grid-column:1;grid-row:1 / span 2}
+.ot-endpoint__body > *:nth-child(2){grid-column:2;grid-row:1}
+.ot-endpoint__body > *:nth-child(3){grid-column:2;grid-row:2}
+.body-public .ot-endpoint__body .table{margin-bottom:0}
+.body-public .ot-endpoint__body pre{margin-bottom:0}
+.ot-apitail{margin-top:34px}
+
+@media (max-width:900px){
+  .ot-endpoint__body{grid-template-columns:1fr}
+  .ot-endpoint__body > *:nth-child(1),
+  .ot-endpoint__body > *:nth-child(2),
+  .ot-endpoint__body > *:nth-child(3){grid-column:1;grid-row:auto}
+  .ot-endpoint{padding:22px 18px}
 }
 @media (max-width:575px){
   .body-public #block_api .container-fluid{padding-inline:16px !important}

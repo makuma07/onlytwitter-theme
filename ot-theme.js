@@ -382,10 +382,75 @@
   /* -----------------------------------------------------------------------
      3d) Panelde hiç olmayan bölümleri ekle
      -------------------------------------------------------------------- */
+  /* -----------------------------------------------------------------------
+     3e) API sayfasını ana sayfa diline getir
+     Panel her şeyi tek karta yığıyor. H4 başlıklarından bölüp her endpoint'i
+     kendi kartına alıyoruz: solda parametre tablosu, sağda örnek yanıt.
+     -------------------------------------------------------------------- */
+  (function apiLayout() {
+    var block = $('#block_api .center-big-content-block');
+    if (!block || block.getAttribute('data-ot-api') === 'done') return;
+
+    var kids = [].slice.call(block.children);
+    var h2 = null, overview = null;
+    kids.forEach(function (k) {
+      if (!h2 && k.tagName === 'H2') h2 = k;
+      if (!overview && k.classList && k.classList.contains('table-responsive')) overview = k;
+    });
+
+    var frag = document.createDocumentFragment();
+
+    var hero = document.createElement('header');
+    hero.className = 'ot-apihero';
+    hero.innerHTML =
+      '<div class="ot-kicker">Developer API</div>' +
+      '<h1 class="ot-h2">Plug the panel<br>into your own app.</h1>' +
+      '<p class="ot-lead">One JSON endpoint handles the whole order lifecycle — ' +
+      'services, orders, status, refills and balance.</p>';
+    if (overview) hero.appendChild(overview);
+    frag.appendChild(hero);
+
+    var current = null, tail = [];
+    kids.forEach(function (el) {
+      if (el === h2 || el === overview) return;
+      if (el.tagName === 'A') { tail.push(el); return; }
+      if (el.tagName === 'H4') {
+        current = document.createElement('section');
+        current.className = 'ot-endpoint';
+        var head = document.createElement('div');
+        head.className = 'ot-endpoint__head';
+        head.appendChild(el);
+        var body = document.createElement('div');
+        body.className = 'ot-endpoint__body';
+        current.appendChild(head);
+        current.appendChild(body);
+        frag.appendChild(current);
+        return;
+      }
+      if (current) current.lastChild.appendChild(el);
+      else frag.appendChild(el);
+    });
+    tail.forEach(function (el) {
+      el.classList.add('ot-btn');
+      var wrap = document.createElement('div');
+      wrap.className = 'ot-apitail';
+      wrap.appendChild(el);
+      frag.appendChild(wrap);
+    });
+
+    block.innerHTML = '';
+    block.appendChild(frag);
+    block.setAttribute('data-ot-api', 'done');
+  })();
+
+  /* -----------------------------------------------------------------------
+     3f) Panelde hiç olmayan bölümleri ekle
+     -------------------------------------------------------------------- */
   (function extraSections() {
     var body = $('.wrapper-content__body');
-    if (!body || !$('#block_56')) return;   // sadece ana sayfa
+    if (!body) return;
 
+    var isHome = !!$('#block_56');
     var S = CONFIG.sections || {};
     // Marka adı: uzantısız alan adı (onlytwitter.com -> onlytwitter)
     var BRAND = CONFIG.brand ||
@@ -399,8 +464,8 @@
       return d.firstElementChild;
     }
 
-    /* --- servis tablosu (yalnızca CONFIG.services doluysa) --- */
-    if (CONFIG.services && CONFIG.services.length) {
+    /* --- servis tablosu (yalnızca ana sayfa + CONFIG.services doluysa) --- */
+    if (isHome && CONFIG.services && CONFIG.services.length) {
       var tabs = [];
       CONFIG.services.forEach(function (s) {
         if (tabs.indexOf(s.tab) === -1) tabs.push(s.tab);
@@ -453,8 +518,8 @@
       if (after) after.parentNode.insertBefore(sec, after.nextSibling);
     }
 
-    /* --- API tanıtımı --- */
-    if (S.apiTeaser !== false && !$('.ot-api')) {
+    /* --- API tanıtımı (API sayfasında gereksiz, sadece ana sayfada) --- */
+    if (isHome && S.apiTeaser !== false && !$('.ot-api')) {
       var api = make(
         '<section class="ot-sec"><div class="ot-wrap ot-api">' +
           '<div>' +
