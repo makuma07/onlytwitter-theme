@@ -347,6 +347,17 @@
         });
     })();
 
+    /* --- üst çubuk: kaydırınca cam efekti --- */
+    (function topbarStuck() {
+      var bar = document.querySelector('#block_47 .navbar-collapse');
+      if (!bar) return;
+      var on = function () {
+        bar.classList.toggle('ot-stuck', window.scrollY > 20);
+      };
+      window.addEventListener('scroll', on, { passive: true });
+      on();
+    })();
+
     /* --- sayfa başlığına aksiyon butonu (New order sayfası hariç) --- */
     (function pageheadCta() {
       var head = document.querySelector('.ot-pagehead');

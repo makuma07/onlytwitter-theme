@@ -1495,9 +1495,8 @@ body.body-public,body.body-internal{
 /* ---- 14c) sidebar ---- */
 .body-internal .component-sidebar,
 .body-internal .sidebar-block__left{
-  background:color-mix(in srgb,var(--ot-ink2) 55%,transparent) !important;
-  backdrop-filter:saturate(160%) blur(18px);
-  -webkit-backdrop-filter:saturate(160%) blur(18px);
+  /* blur yok: ızgara çizgileri rayın altından net görünsün */
+  background:color-mix(in srgb,var(--ot-ink2) 30%,transparent) !important;
   border-right:1px solid var(--ot-line-soft) !important;
   box-shadow:none !important;
 }
@@ -1513,7 +1512,6 @@ body.body-public,body.body-internal{
 }
 .body-internal .component-sidebar__menu-logo{
   padding:18px 14px !important;
-  border-bottom:1px solid var(--ot-line-soft);
   background:transparent !important;
 }
 .body-internal .component-sidebar__menu-item-link{
@@ -1786,7 +1784,14 @@ body.body-public,body.body-internal{
     position:fixed;top:0;left:250px;right:0;height:58px;z-index:850;
     display:flex !important;align-items:center;
     padding:0 20px;
-    background:color-mix(in srgb,var(--ot-ink) 55%,transparent);
+    /* tepede ŞEFFAF: arkadaki ızgara kareleri görünsün (blur 1px çizgileri
+       yutuyordu). Cam efekti kaydırınca .ot-stuck ile gelir. */
+    background:transparent;
+    border-bottom:1px solid transparent;
+    transition:background .35s var(--ot-ease),border-color .35s;
+  }
+  .body-internal #block_47 .navbar-collapse.ot-stuck{
+    background:color-mix(in srgb,var(--ot-ink) 62%,transparent);
     backdrop-filter:saturate(180%) blur(18px);
     -webkit-backdrop-filter:saturate(180%) blur(18px);
     border-bottom:1px solid var(--ot-line-soft);
