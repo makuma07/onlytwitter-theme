@@ -92,10 +92,64 @@
     services: []
   };
 
-  // Sadece giriş yapılmamış sayfalarda çalış
-  if (!document.body || !document.body.classList.contains('body-public')) return;
+  if (!document.body) return;
+  var IS_PUBLIC   = document.body.classList.contains('body-public');
+  var IS_INTERNAL = document.body.classList.contains('body-internal');
+  if (!IS_PUBLIC && !IS_INTERNAL) return;
 
   document.documentElement.classList.add('ot-js');
+
+  /* ---------------------------------------------------------------------
+     0) İçerik renk düzelticisi (public + panel içi)
+     Panel editörü metinlere inline renk basıyor (koyu kırmızı, lacivert,
+     siyah...). Açık temada seçilmiş bu renkler koyu zeminde okunmuyor.
+     Kural: koyu VE renkliyse aynı tonu parlat; koyu ama griye yakınsa
+     inline rengi kaldır (temanın metin rengi devralır). Parlak renklere
+     dokunulmaz. Kapatmak için CONFIG.fixContentColors = false.
+     --------------------------------------------------------------------- */
+  (function fixContentColors() {
+    if (CONFIG.fixContentColors === false) return;
+    var els = document.querySelectorAll(
+      '.wrapper-content__body [style*="color"], .wrapper-content__body font[color]');
+    els.forEach(function (el) {
+      var c = el.style ? el.style.color : '';
+      if (!c && el.getAttribute) c = el.getAttribute('color') || '';
+      if (!c) return;
+      var probe = document.createElement('i');
+      probe.style.color = c;
+      if (!probe.style.color) return;
+      document.body.appendChild(probe);
+      var rgb = getComputedStyle(probe).color;
+      probe.remove();
+      var m = rgb.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+      if (!m) return;
+      var r = +m[1], g = +m[2], b = +m[3];
+      var lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      if (lum >= 110) return;                       // zaten okunuyor
+      var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = (mx - mn) / 255;
+      var l = (mx + mn) / 510;
+      var s = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+      if (s < 0.25) {                               // siyah/koyu gri
+        el.style.color = '';
+        if (el.removeAttribute) el.removeAttribute('color');
+        return;
+      }
+      var rr = r / 255, gg = g / 255, bb = b / 255, h = 0, dd = d;
+      if (dd) {
+        if (mx === r)      h = (((gg - bb) / dd) % 6);
+        else if (mx === g) h = ((bb - rr) / dd) + 2;
+        else               h = ((rr - gg) / dd) + 4;
+        h *= 60; if (h < 0) h += 360;
+      }
+      el.style.setProperty('color',
+        'hsl(' + Math.round(h) + ',' + Math.round(Math.min(90, s * 100)) + '%,64%)',
+        'important');
+      if (el.removeAttribute) el.removeAttribute('color');
+    });
+  })();
+
+  // Bundan sonrası vitrin (giriş yapılmamış) sayfalarına özel
+  if (!IS_PUBLIC) return;
 
   var $  = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };

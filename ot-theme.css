@@ -17,7 +17,7 @@
 /* -------------------------------------------------------------------------
    1) RENK SİSTEMİ — panelin kendi değişkenlerini yeniden tanımla
    ---------------------------------------------------------------------- */
-body.body-public{
+body.body-public,body.body-internal{
   --color-id-20: #07080A;              /* sayfa zemini            */
   --color-id-21: #0E1116;              /* kart / beyaz yüzeyler   */
   --color-id-26: #F2F4F7;              /* koyu metin -> açık      */
@@ -61,7 +61,7 @@ body.body-public{
    yeniden tanımlıyoruz. Bu blok olmazsa navbar linkleri, form inputları ve
    footer eski lacivert renkte kalır.
    ---------------------------------------------------------------------- */
-body.body-public{
+body.body-public,body.body-internal{
   --text-dark:var(--ot-fg);
   --link:var(--ot-accent2);
 
@@ -121,7 +121,7 @@ body.body-public{
 /* -------------------------------------------------------------------------
    2) TEMEL — zemin, tipografi, grain
    ---------------------------------------------------------------------- */
-body.body-public{
+body.body-public,body.body-internal{
   background:var(--ot-ink) !important;
   color:var(--ot-fg) !important;
   font-family:"Manrope",-apple-system,BlinkMacSystemFont,sans-serif !important;
@@ -129,7 +129,7 @@ body.body-public{
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
 }
-.body-public::after{
+.body-public::after,.body-internal::after{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;
   opacity:.38;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
@@ -1357,4 +1357,320 @@ body.body-public{
 @media (prefers-reduced-motion:reduce){
   .body-public *{animation-duration:.001ms !important;transition-duration:.001ms !important}
   .ot-js .ot-rv{opacity:1;transform:none}
+}
+
+/* =========================================================================
+   14) İÇ PANEL (giriş yapılmış sayfalar — body.body-internal)
+   Renk sistemi ve temel gövde 1/1b bloklarında iki gövdeye birden açıldı.
+   Burada iç panele özgü değişkenler ve bileşenler var.
+   ========================================================================= */
+
+/* ---- 14a) iç panelin türetilmiş değişkenleri (1b'nin devamı) ---- */
+body.body-public,body.body-internal{
+  --navbar_private_items_text_color:var(--ot-fg2);
+  --navbar_private_background_color:transparent;
+  --navbar_private_items_hover_text_color:var(--ot-fg);
+  --navbar_private_items_active_text_color:var(--ot-fg);
+  --navbar_private_balance_text_color:#fff;
+  --navbar_private_balance_background_color:var(--ot-accent);
+
+  --sidebar_background_color:var(--ot-ink2);
+  --sidebar_items_text_color:var(--ot-fg2);
+  --sidebar_items_hover_text_color:var(--ot-fg);
+  --sidebar_items_active_text_color:var(--ot-fg);
+  --sidebar_items_active_background_color:rgba(46,124,255,.12);
+  --sidebar_brand_text_color:var(--ot-fg);
+  --sidebar_brand_background_color:transparent;
+
+  --ticket_dialog_admin_text_color:var(--ot-fg);
+  --ticket_dialog_admin_username_text_color:var(--ot-fg3);
+  --ticket_dialog_admin_background_color:var(--ot-panel2);
+  --ticket_dialog_user_text_color:var(--ot-fg);
+  --ticket_dialog_user_username_text_color:var(--ot-fg3);
+  --ticket_dialog_user_background_color:rgba(46,124,255,.14);
+
+  --checkbox_radio_text_color:var(--ot-fg2);
+  --checkbox_radio_checked_background_color:var(--ot-accent);
+  --checkbox_radio_unchecked_background_color:rgba(7,8,10,.55);
+
+  --tabs_text_color:var(--ot-fg2);
+  --tabs_hover_text_color:var(--ot-fg);
+  --tabs_active_text_color:#fff;
+  --tabs_active_background_color:var(--ot-accent);
+  --tabs_active_border_color:transparent;
+
+  --pagination_text_color:var(--ot-fg2);
+  --pagination_hover_text_color:var(--ot-fg);
+  --pagination_active_text_color:#fff;
+  --pagination_active_background_color:var(--ot-accent);
+  --pagination_active_border_color:transparent;
+
+  --alert_success_text_color:#4ADE80;
+  --alert_success_background_color:rgba(74,222,128,.10);
+  --alert_danger_text_color:#F87171;
+  --alert_danger_background_color:rgba(248,113,113,.10);
+  --alert_info_text_color:var(--ot-accent2);
+  --alert_info_background_color:rgba(46,124,255,.10);
+
+  --badge_primary_text_color:#fff;
+  --badge_primary_background_color:var(--ot-accent);
+  --badge_secondary_text_color:var(--ot-fg);
+  --badge_secondary_background_color:rgba(255,255,255,.10);
+  --badge_danger_text_color:#fff;
+  --badge_danger_background_color:#DC2626;
+  --badge_warning_text_color:#111;
+  --badge_warning_background_color:#F0B429;
+
+  --dropdown_button_text_color:#fff;
+  --dropdown_button_background_color:var(--ot-accent);
+  --dropdown_background_color:var(--ot-ink2);
+  --dropdown_items_text_color:var(--ot-fg2);
+  --dropdown_button_hover_text_color:#fff;
+  --dropdown_button_hover_background_color:#2A6FE8;
+  --dropdown_items_hover_text_color:var(--ot-fg);
+  --balance_dropdown_button_text_color:#fff;
+  --balance_dropdown_button_background_color:var(--ot-accent);
+  --balance_dropdown_background_color:var(--ot-ink2);
+  --balance_dropdown_items_text_color:var(--ot-fg2);
+  --balance_dropdown_button_hover_text_color:#fff;
+  --balance_dropdown_button_hover_background_color:#1F5FD6;
+  --balance_dropdown_items_hover_text_color:var(--ot-fg);
+  --default_dropdown_button_text_color:#fff;
+  --default_dropdown_button_background_color:var(--ot-accent);
+  --default_dropdown_background_color:var(--ot-ink2);
+  --default_dropdown_items_text_color:var(--ot-fg2);
+  --default_dropdown_button_hover_text_color:#fff;
+  --default_dropdown_button_hover_background_color:#2A6FE8;
+  --default_dropdown_items_hover_text_color:var(--ot-fg);
+  --default_dropdown_items_active_text_color:var(--ot-accent2);
+  --default_dropdown_button_border_color:transparent;
+  --default_dropdown_button_hover_border_color:transparent;
+
+  --services_description_background_color:var(--ot-panel);
+  --services_description_border_color:var(--ot-line);
+  --services_description_text_color:var(--ot-fg2);
+
+  --form_group_dropdown_border_color:var(--ot-line);
+  --form_group_dropdown_items_background_color:var(--ot-ink2);
+  --form_group_dropdown_items_text_color:var(--ot-fg2);
+  --form_group_dropdown_items_active_text_color:var(--ot-accent2);
+  --form_group_dropdown_items_hover_background_color:rgba(46,124,255,.14);
+  --form_group_dropdown_items_hover_text_color:var(--ot-fg);
+  --form_group_search_placeholder:var(--ot-fg3);
+
+  --platforms_hover_icon_color:var(--ot-accent2);
+  --platforms_hover_text_color:var(--ot-fg);
+  --platforms_hover_background_color:rgba(46,124,255,.10);
+  --platforms_hover_border_color:var(--ot-line);
+  --platforms_active_text_color:#fff;
+  --platforms_active_icon_color:#fff;
+  --platforms_active_background_color:var(--ot-accent);
+  --platforms_active_border_color:transparent;
+}
+
+/* ---- 14b) tipografi ---- */
+.body-internal h1,.body-internal h2,.body-internal h3,
+.body-internal h4,.body-internal h5,.body-internal h6{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 680;
+  letter-spacing:-.025em !important;
+  color:var(--ot-fg) !important;
+}
+.body-internal p,.body-internal li,.body-internal label{color:var(--ot-fg2)}
+.body-internal a{color:var(--ot-accent2)}
+/* sayfa başlığı — uygulama sayfası, vitrin değil: daha ölçülü boyut */
+.body-internal .text-block__title h2{
+  font-size:clamp(24px,2.6vw,34px) !important;
+  font-variation-settings:"wdth" 88,"wght" 700;
+  margin:0 !important;
+}
+.body-internal .text-block__description p{color:var(--ot-fg2) !important;font-weight:350}
+.body-internal .text-block__title h2 span,
+.body-internal .text-block__title h2 strong{font-size:inherit !important}
+.body-internal .block-bg{background:transparent !important}
+.body-internal [id^="block_"]{background:transparent !important}
+.body-internal .block-divider-top,
+.body-internal .block-divider-bottom{display:none !important}
+
+/* ---- 14c) sidebar ---- */
+.body-internal .component-sidebar,
+.body-internal .sidebar-block__left{
+  background:var(--ot-ink2) !important;
+  border-right:1px solid var(--ot-line-soft) !important;
+  box-shadow:none !important;
+}
+.body-internal .component-sidebar__menu-brand,
+.body-internal .component-sidebar__menu-brand p,
+.body-internal .component-sidebar__menu-brand span,
+.body-internal .component-sidebar__menu-brand strong{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 78,"wght" 800;
+  font-size:15px !important;letter-spacing:.02em !important;
+  color:var(--ot-fg) !important;margin:0 !important;
+  background:transparent !important;
+}
+.body-internal .component-sidebar__menu-logo{
+  padding:18px 14px !important;
+  border-bottom:1px solid var(--ot-line-soft);
+  background:transparent !important;
+}
+.body-internal .component-sidebar__menu-item-link{
+  display:flex;align-items:center;gap:10px;
+  font-size:14px !important;font-weight:500;
+  border-radius:10px !important;
+  margin:2px 10px !important;padding:10px 12px !important;
+  transition:background .25s var(--ot-ease),color .25s;
+}
+.body-internal .component-sidebar__menu-item-link:hover{
+  background:var(--ot-panel2) !important;text-decoration:none;
+}
+.body-internal .component-sidebar__menu-item-active .component-sidebar__menu-item-link{
+  background:rgba(46,124,255,.12) !important;
+  color:var(--ot-fg) !important;
+  box-shadow:inset 2px 0 0 var(--ot-accent);
+}
+.body-internal .component-sidebar__menu-item .badge{
+  margin-left:auto;border-radius:100px;
+  font-size:10.5px;padding:3px 8px;
+}
+
+/* ---- 14d) üst çubuk (private navbar) ---- */
+.body-internal .component-navbar__navbar-private,
+.body-internal .component-navbar-private__wrapper,
+.body-internal #block_47 .component_private_navbar{
+  background:transparent !important;box-shadow:none !important;border:0 !important;
+}
+.body-internal #block_47{
+  background:color-mix(in srgb,var(--ot-ink) 82%,transparent) !important;
+  backdrop-filter:saturate(180%) blur(18px);
+  -webkit-backdrop-filter:saturate(180%) blur(18px);
+  border-bottom:1px solid var(--ot-line-soft);
+  position:sticky;top:0;z-index:800;
+}
+.body-internal .component-navbar-nav-link__navbar-private{
+  font-size:13.5px !important;border-radius:8px;
+  padding:7px 12px !important;
+}
+.body-internal .component-navbar-nav-link__navbar-private:hover{
+  background:var(--ot-panel2) !important;
+}
+.body-internal .navbar-burger-line,
+.body-internal .navbar-burger-line::before,
+.body-internal .navbar-burger-line::after{background:var(--ot-fg) !important}
+
+/* ---- 14e) kartlar ve formlar ---- */
+.body-internal .card:not(.col-ed){
+  background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:var(--ot-r) !important;
+  box-shadow:none !important;
+  padding:24px !important;
+}
+.body-internal .form-group label{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ot-fg3) !important;margin-bottom:8px;
+}
+.body-internal .form-control,
+.body-internal input[type=text],
+.body-internal input[type=password],
+.body-internal input[type=email],
+.body-internal input[type=number],
+.body-internal select,
+.body-internal textarea{
+  background:rgba(7,8,10,.55) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:12px !important;
+  color:var(--ot-fg) !important;
+  min-height:46px;padding:10px 15px;font-size:15px;
+  box-shadow:none !important;
+}
+.body-internal textarea{min-height:110px}
+.body-internal .form-control::placeholder{color:var(--ot-fg3) !important}
+.body-internal .form-control:focus{
+  border-color:rgba(46,124,255,.7) !important;
+  box-shadow:0 0 0 4px rgba(46,124,255,.14) !important;
+}
+
+/* ---- 14f) butonlar ---- */
+.body-internal .btn{
+  border-radius:100px !important;font-weight:600 !important;
+  letter-spacing:-.01em;border:1px solid transparent !important;
+  transition:transform .35s var(--ot-ease),box-shadow .35s,background .3s !important;
+}
+.body-internal .btn:hover{transform:translateY(-2px)}
+.body-internal .btn-big-primary,.body-internal .btn-primary{
+  background:var(--ot-accent) !important;color:#fff !important;
+  box-shadow:0 10px 30px -10px var(--ot-glow) !important;
+}
+.body-internal .btn-outline-primary,.body-internal .btn-secondary,
+.body-internal .btn-big-secondary{
+  background:transparent !important;color:var(--ot-fg) !important;
+  border-color:var(--ot-line) !important;
+}
+.body-internal .btn-outline-primary:hover,.body-internal .btn-secondary:hover,
+.body-internal .btn-big-secondary:hover{background:var(--ot-panel2) !important}
+
+/* ---- 14g) tablolar (orders / services) ---- */
+.body-internal .table{
+  --bs-table-bg:transparent;--bs-table-color:var(--ot-fg2);
+  --bs-table-border-color:var(--ot-line-soft);
+  background:transparent !important;color:var(--ot-fg2) !important;
+  border-collapse:separate;border-spacing:0;
+  border:1px solid var(--ot-line) !important;
+  border-radius:var(--ot-r);overflow:hidden;
+}
+.body-internal .table thead th{
+  background:var(--ot-panel2) !important;color:var(--ot-fg3) !important;
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:500 !important;border:0 !important;
+  border-bottom:1px solid var(--ot-line) !important;
+  padding:13px 16px !important;white-space:nowrap;
+}
+.body-internal .table tbody td,
+.body-internal .table tbody th{
+  background:transparent !important;color:var(--ot-fg2) !important;
+  border:0 !important;border-bottom:1px solid var(--ot-line-soft) !important;
+  padding:13px 16px !important;font-size:14px;vertical-align:middle;
+}
+.body-internal .table tbody tr:last-child td{border-bottom:0 !important}
+.body-internal .table tbody tr:hover td{background:var(--ot-panel) !important}
+
+/* ---- 14h) platform çipleri, istatistik kartları, rozetler ---- */
+.body-internal .platforms-item__with-icon{
+  border:1px solid var(--ot-line) !important;border-radius:12px !important;
+  background:var(--ot-panel) !important;
+  transition:background .25s,border-color .25s;
+}
+.body-internal .totals-block__card{
+  background:var(--ot-panel) !important;
+  border:1px solid var(--ot-line-soft) !important;
+  border-radius:var(--ot-r) !important;padding:18px !important;
+}
+.body-internal .totals-block__icon-preview{
+  background:rgba(46,124,255,.12) !important;border-radius:12px !important;
+}
+.body-internal .totals-block__icon{color:var(--ot-accent2) !important}
+.body-internal .totals-block__count-value{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 82,"wght" 700;
+  color:var(--ot-fg) !important;
+}
+.body-internal .badge{border-radius:100px !important;font-weight:600}
+
+/* ---- 14i) iç sayfa footer'ı: sade tek satır ---- */
+.body-internal .wrapper-content__footer{
+  background:transparent !important;
+  border-top:1px solid var(--ot-line-soft);
+  padding:22px 0 !important;margin-top:40px;
+}
+
+/* bakiye çipi: 64px'lik mavi dikdörtgen yerine pill */
+.body-internal .component-navbar-balance-item__navbar-private{
+  background:var(--ot-accent) !important;color:#fff !important;
+  height:36px !important;align-self:center;display:inline-flex;align-items:center;
+  padding:0 16px !important;border-radius:100px !important;
+  font-weight:600;font-size:13.5px;
+  box-shadow:0 8px 22px -8px var(--ot-glow);
 }
