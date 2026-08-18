@@ -37,8 +37,22 @@
        için span'i JS sarar; metin değişmez. Kapatmak için false yap. */
     heroOutlineLastLine: true,
 
+    /* Bölüm başlıkları — demo'daki metinler.
+       null yaparsan panel editöründeki metinler olduğu gibi kalır. */
+    headings: {
+      block_51: {
+        title: 'Built to be the cheapest way to get noticed.',
+        lead:  'Learn why using our panel is the best and cheapest way to grow online — ' +
+               'quality services, honest pricing, and delivery that starts in minutes.'
+      },
+      block_50: { title: "Four steps. That's it." },
+      block_52: { title: 'What our customers say.' },
+      block_54: { title: 'Questions, answered.' }
+    },
+
     /* Panelde olmayan, demo'ya özel bölümler. false yaparsan eklenmez. */
     sections: {
+      heroCta:   true,   // hero'daki iki buton + güven satırı
       apiTeaser: true,   // "Plug the panel into your own app"
       cta:       true,   // "Start growing today."
       footer:    true    // footer sütunları (Panel / Developers / Company)
@@ -102,6 +116,35 @@
           '<br><span class="ot-outline">' + esc(txt.slice(i + 1)) + '</span>';
       }
     }
+  })();
+
+  /* -----------------------------------------------------------------------
+     1c) Hero CTA butonları + güven satırı (demo'da var, panelde yok)
+     -------------------------------------------------------------------- */
+  (function heroExtras() {
+    if (CONFIG.sections && CONFIG.sections.heroCta === false) return;
+    var desc = $('.block-signin-text__block-text-description');
+    if (!desc || $('.ot-hero-cta')) return;
+
+    var tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+               'stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    var wrap = document.createElement('div');
+    wrap.innerHTML =
+      '<div class="ot-hero-cta">' +
+        '<a href="/signup" class="ot-btn ot-btn--solid">Create your account ' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>' +
+        '<a href="/services" class="ot-btn">Browse services</a>' +
+      '</div>' +
+      '<ul class="ot-hero-facts">' +
+        '<li>' + tick + 'No password required</li>' +
+        '<li>' + tick + 'Prompt delivery</li>' +
+        '<li>' + tick + 'Reseller friendly</li>' +
+        '<li>' + tick + 'API v2 included</li>' +
+      '</ul>';
+
+    while (wrap.firstChild) desc.parentNode.appendChild(wrap.firstChild);
   })();
 
   /* -----------------------------------------------------------------------
@@ -214,6 +257,18 @@
       k.textContent = KICKERS[id];
       title.parentNode.insertBefore(k, title);
     });
+
+    // Başlık metinlerini demo'daki hallerine çevir.
+    // CONFIG.headings = null yaparsan sitedeki metinler olduğu gibi kalır.
+    if (CONFIG.headings) {
+      Object.keys(CONFIG.headings).forEach(function (id) {
+        var cfg = CONFIG.headings[id];
+        var h = $('#' + id + ' .text-block__title h2');
+        if (h && cfg.title) h.textContent = cfg.title;
+        var p = $('#' + id + ' .text-block__description p');
+        if (p && cfg.lead) p.textContent = cfg.lead;
+      });
+    }
 
     // yorum avatarları -> baş harfler (gerçek fotoğraf varsa dokunma)
     $$('.reviews-slider__slide').forEach(function (slide) {

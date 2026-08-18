@@ -341,7 +341,7 @@ body.body-public{
 /* DİKKAT: Panel, grid sütunlarına da `card` sınıfı veriyor
    (`.col-ed.md:col-ed-span-6.card`). Bu yüzden `.card` kuralından sütunları
    ayıklıyoruz — yoksa özellik/istatistik kartları iç içe iki kutu olarak çıkar. */
-.body-public .card:not(.col-ed),
+.body-public .card:not(.col-ed):not(.how-it-works-card),
 .body-public .component_card .card{
   background:linear-gradient(160deg,var(--ot-panel2),var(--ot-panel)) !important;
   border:1px solid var(--ot-line) !important;
@@ -630,9 +630,12 @@ body.body-public{
 .body-public .reviews-slider__slide-description p{
   font-size:15px;line-height:1.7;font-weight:350;color:var(--ot-fg2) !important;
 }
-.body-public .slick-dots li button:before{color:var(--ot-fg3) !important;opacity:.5 !important}
-.body-public .slick-dots li.slick-active button:before{color:var(--ot-accent) !important;opacity:1 !important}
-.body-public .slick-prev:before,.body-public .slick-next:before{color:var(--ot-fg2) !important}
+/* demo'da statik 3'lü grid var — oklar ve noktalar gizleniyor */
+.body-public .reviews-slider .slick-arrow,
+.body-public .reviews-slider .slick-dots{display:none !important}
+.body-public .reviews-slider .slick-track{display:flex !important;align-items:stretch}
+.body-public .reviews-slider .slick-slide{height:auto !important}
+.body-public .reviews-slider .slick-slide > div{height:100%}
 
 /* -------------------------------------------------------------------------
    10) SSS (#block_58)
@@ -835,6 +838,17 @@ body.body-public{
   font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ot-fg2);
 }
+
+/* hero: CTA butonları + güven satırı (JS ekler) */
+.ot-hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.ot-hero-facts{
+  display:flex;flex-wrap:wrap;gap:8px 22px;margin:34px 0 0;padding:26px 0 0;
+  border-top:1px solid var(--ot-line-soft);list-style:none;
+}
+.ot-hero-facts li{
+  display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ot-fg2);
+}
+.ot-hero-facts svg{width:14px;height:14px;color:var(--ot-accent2);flex:none}
 
 /* platform şeridi */
 .ot-strip{
