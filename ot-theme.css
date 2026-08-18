@@ -2247,52 +2247,110 @@ body.body-public,body.body-internal{
    15px daha geniş kalıp kart genişliklerini şaşırtıyordu */
 html:has(.body-internal){overflow-y:scroll}
 
-/* ---- bilet görünümü: sohbet düzeni ----
-   Mavi balon gitti; kullanıcı solda, destek sağda, ikisi de nötr.
-   Destek yalnızca isim etiketindeki mavi ile ayrışır. */
+/* ---- bilet görünümü: destek thread'i ----
+   Her mesaj tam genişlik bir satır: avatar + isim + rol rozeti + tarih,
+   altında içerik. Altta kutulu cevap alanı (Send sağ altta).
+   NOT: panelin sınıf adları ters — row-admin = bilet SAHİBİ,
+   row-user = destek (yakalanan sayfadan doğrulandı). */
 .body-internal .ticket-dialog__title{
   font-family:"Archivo",sans-serif !important;
-  font-variation-settings:"wdth" 90,"wght" 660;
-  font-size:18px !important;letter-spacing:-.015em !important;
-  color:var(--ot-fg) !important;margin:0 0 20px !important;
+  font-variation-settings:"wdth" 90,"wght" 680;
+  font-size:20px !important;letter-spacing:-.02em !important;
+  color:var(--ot-fg) !important;margin:0 0 6px !important;
 }
-.body-internal .ticket-dialog__row{
-  display:flex;flex-direction:column;align-items:flex-start;
-  margin:16px 0;
+.ot-tmeta{
+  display:flex;gap:18px;flex-wrap:wrap;margin:0 0 18px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.04em;color:var(--ot-fg3);
 }
-.body-internal .ticket-dialog__row-admin{align-items:flex-end}
-/* DİKKAT: panelin sınıf adları ters — row-admin = bilet SAHİBİNİN mesajı,
-   row-user = desteğin mesajı (yakalanan sayfadan doğrulandı). */
-.body-internal .ticket-dialog__row-message{
-  max-width:78%;
-  background:rgba(255,255,255,.06) !important;      /* destek: soldaki balon */
-  border:1px solid var(--ot-line-soft) !important;
-  border-radius:14px 14px 14px 4px !important;
-  padding:14px 16px !important;
+.ot-tmeta b{color:var(--ot-fg2);font-weight:500}
+
+/* mesaj listesi tek çerçevede, satırlar hairline ile ayrık */
+.body-internal .ticket-dialog__body{
+  border:1px solid var(--ot-line-soft);border-radius:16px;
+  background:var(--ot-panel);overflow:hidden;
+}
+.body-internal .ticket-dialog__row.ot-tmsg{
+  display:block;margin:0;padding:16px 18px;
+  border-top:1px solid var(--ot-line-soft);
+}
+.body-internal .ticket-dialog__row.ot-tmsg:first-child{border-top:0}
+.ot-tmsg__head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ot-tmsg__head b{font-size:14px;color:var(--ot-fg);font-weight:600}
+.ot-tmsg__head time{
+  margin-left:auto;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ot-fg3);
+}
+.ot-tchip{
+  font-size:10.5px;font-weight:600;color:var(--ot-fg3);
+  border:1px solid var(--ot-line-soft);background:var(--ot-panel);
+  border-radius:100px;padding:2px 9px;
+}
+.ot-avatar--staff{
+  background:rgba(46,124,255,.14);color:var(--ot-accent2);
+}
+.ot-avatar--staff svg{width:15px;height:15px}
+
+/* mesaj gövdesi: balon yok, isimle aynı hizada metin */
+.body-internal .ot-tmsg .ticket-dialog__row-message{
+  background:transparent !important;border:0 !important;
+  border-radius:0 !important;box-shadow:none !important;
+  padding:0 0 0 38px !important;max-width:none;
   color:var(--ot-fg2) !important;font-size:14.5px;line-height:1.7;
 }
-.body-internal .ticket-dialog__row-admin .ticket-dialog__row-message{
-  background:var(--ot-panel2) !important;           /* müşteri: sağdaki balon */
-  border-radius:14px 14px 4px 14px !important;
-}
-.body-internal .ticket-dialog__row-message strong{color:var(--ot-fg)}
-.body-internal .ticket-dialog__row-message hr{
+.body-internal .ot-tmsg .ticket-dialog__row-message strong{color:var(--ot-fg)}
+.body-internal .ot-tmsg .ticket-dialog__row-message hr{
   border:0;border-top:1px solid var(--ot-line-soft);margin:12px 0;
 }
-.body-internal .ticket-dialog__row-bottom{
-  display:flex;gap:8px;margin-top:7px;
-  font-family:"IBM Plex Mono",monospace;font-size:10.5px;
-  letter-spacing:.06em;color:var(--ot-fg3);
-}
-.body-internal .ticket-dialog__row-bottom-name{font-weight:600}
-.body-internal .ticket-dialog__row-user .ticket-dialog__row-bottom-name{
-  color:var(--ot-accent2);                          /* destek adı mavi etiket */
-}
-/* cevap alanı: kartın altında hairline ile ayrılır */
+/* eski isim/tarih satırı gizli — bilgi başlığa taşındı */
+.body-internal .ot-tmsg .ticket-dialog__row-bottom{display:none !important}
+
+/* cevap kutusu */
 .body-internal .ticket-dialog__footer{
-  border-top:1px solid var(--ot-line-soft);
-  margin-top:22px;padding-top:20px;
+  border:1px solid var(--ot-line-soft);border-radius:16px;
+  background:var(--ot-panel);
+  margin-top:18px;padding:14px 16px 64px;
+  position:relative;
 }
-@media (max-width:575px){
-  .body-internal .ticket-dialog__row-message{max-width:92%}
+.body-internal .ticket-dialog__footer .form-group label{display:none}
+.body-internal .ticket-dialog__footer textarea.form-control{
+  background:transparent !important;border:0 !important;
+  box-shadow:none !important;min-height:90px;height:96px;
+  padding:4px !important;resize:vertical;
+}
+.body-internal .ticket-dialog__footer .form-group{margin-bottom:0}
+.body-internal .ticket-dialog__footer .component_button_submit{
+  position:absolute;right:14px;bottom:14px;
+}
+.body-internal .ticket-dialog__footer .btn-big-primary{
+  display:inline-flex !important;align-items:center;
+  width:auto !important;height:40px;padding:0 18px !important;
+}
+.body-internal .ticket-dialog__footer .tickets-uploader{
+  position:absolute;left:16px;bottom:20px;right:140px;
+}
+
+/* ---- bilet thread'i: mockup'a tam uyum düzeltmeleri ---- */
+/* satır zeminleri DÜZ — panel row'a kendi değişkenini basıyor */
+.body-internal .ticket-dialog__row.ot-tmsg,
+.body-internal .ticket-dialog__row.ot-tmsg .ticket-dialog__row-message{
+  background:transparent !important;
+}
+/* ilk mesajdaki uçtan uca çizgi tamamen gizli */
+.body-internal .ot-tmsg .ticket-dialog__row-message hr{display:none !important}
+/* textarea kutu değil, composer içinde düz alan */
+.body-internal .ticket-dialog__footer textarea.form-control,
+.body-internal .ticket-dialog__footer .form-control:focus{
+  background:transparent !important;
+  border:0 !important;box-shadow:none !important;
+  border-radius:0 !important;
+}
+/* staff avatarı mor (mockup) */
+.ot-avatar--staff{
+  background:linear-gradient(140deg,#8B7CF5,#6356E8) !important;
+  color:#fff !important;
+}
+/* Send Reply butonu ikonlu, sağ altta */
+.body-internal .ticket-dialog__footer .btn-big-primary svg{
+  width:14px;height:14px;margin-right:7px;
 }

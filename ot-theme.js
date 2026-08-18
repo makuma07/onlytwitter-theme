@@ -453,6 +453,71 @@
       });
     })();
 
+    /* --- bilet görünümü: satırları thread başlıklarına dönüştür --- */
+    (function ticketThread() {
+      var dlg = document.querySelector('.ticket-dialog');
+      if (!dlg || dlg.getAttribute('data-ot') === 'done') return;
+      dlg.setAttribute('data-ot', 'done');
+      var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+
+      var firstDate = '';
+      [].slice.call(dlg.querySelectorAll('.ticket-dialog__row')).forEach(function (r) {
+        if (r.querySelector('.ot-tmsg__head')) return;
+        var isOwner = r.classList.contains('ticket-dialog__row-admin');
+        var nameEl = r.querySelector('.ticket-dialog__row-bottom-name');
+        var dateEl = r.querySelector('.ticket-dialog__row-bottom-date');
+        var name = nameEl ? nameEl.textContent.trim() : (isOwner ? 'You' : 'Support');
+        var date = dateEl ? dateEl.textContent.trim() : '';
+        if (!firstDate && date) firstDate = date;
+
+        var head = document.createElement('div');
+        head.className = 'ot-tmsg__head';
+        head.innerHTML =
+          (isOwner
+            ? '<span class="ot-avatar">' + esc(name.charAt(0).toUpperCase()) + '</span>'
+            : '<span class="ot-avatar ot-avatar--staff">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+              'stroke-linecap="round"><path d="M4 13a8 8 0 0 1 16 0"/>' +
+              '<rect x="3" y="13" width="4" height="6" rx="2"/>' +
+              '<rect x="17" y="13" width="4" height="6" rx="2"/>' +
+              '<path d="M17 19a3 3 0 0 1-3 3h-2"/></svg></span>') +
+          '<b>' + esc(name) + '</b>' +
+          '<span class="ot-tchip">' + (isOwner ? 'You' : 'Staff') + '</span>' +
+          '<time>' + esc(date) + '</time>';
+        r.insertBefore(head, r.firstChild);
+        r.classList.add('ot-tmsg');
+      });
+
+      /* başlık altına meta satırı: bilet no + açılış tarihi */
+      var title = dlg.querySelector('.ticket-dialog__title');
+      var m = location.pathname.match(/viewticket\/(\d+)/);
+      if (title && !dlg.querySelector('.ot-tmeta')) {
+        var meta = document.createElement('div');
+        meta.className = 'ot-tmeta';
+        meta.innerHTML =
+          (m ? '<span>Ticket ID: <b>#' + m[1] + '</b></span>' : '') +
+          (firstDate ? '<span>Created: <b>' + esc(firstDate) + '</b></span>' : '');
+        if (meta.innerHTML) title.parentNode.insertBefore(meta, title.nextSibling);
+      }
+
+      /* composer: etiket yerine placeholder + Send Reply etiketi */
+      var ta = dlg.querySelector('.ticket-dialog__footer textarea');
+      if (ta) {
+        if (!ta.placeholder) ta.placeholder = 'Type your message...';
+        /* CSS kuralı tarayıcıda tutmadı (sebep çözülemedi — PROJE.md tuzak
+           listesinde); composer düz alan görünümü inline garantiye alınır */
+        ta.style.setProperty('background', 'transparent', 'important');
+        ta.style.setProperty('border', '0', 'important');
+        ta.style.setProperty('box-shadow', 'none', 'important');
+      }
+      var sb = dlg.querySelector('.ticket-dialog__footer button[type="submit"]');
+      if (sb && !sb.querySelector('svg')) {
+        sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="m22 2-11 11M22 2 15 22l-4-9-9-4Z"/></svg>Send Reply';
+      }
+    })();
+
     /* --- üst çubuk: kaydırınca cam efekti --- */
     (function topbarStuck() {
       var bar = document.querySelector('#block_47 .navbar-collapse');
