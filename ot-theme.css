@@ -1769,13 +1769,32 @@ body.body-public,body.body-internal{
    16) İÇ PANEL — cila turu (Vercel/Linear işi detaylar)
    ========================================================================= */
 
-/* ---- üst çubuk: bakiye + Account + Logout sağa yaslanır ---- */
+/* ---- üst çubuk: bakiye + Account + Logout EN SAĞA ----
+   Gerçek yapı: #block_47 aslında 250px'lik sidebar kolonu; üst menü onun
+   içine gömülü. Genişlik zinciriyle uğraşmak yerine menü kendi sabit
+   çubuğuna alınır (left:250px -> sağ kenara kadar), sağa yaslanır.
+   #block_47 içindeki marka+burger masaüstünde gizlenir (sidebar'da zaten var). */
 @media (min-width:992px){
-  .body-internal #block_47 .navbar{width:100%;padding:8px 24px !important}
-  .body-internal #block_47 .navbar-collapse{flex:1 1 auto}
+  .body-internal #block_47{
+    position:static !important;background:transparent !important;
+    border:0 !important;backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+  }
+  .body-internal #block_47 .navbar-private__header{display:none !important}
+  .body-internal #block_47 .navbar{padding:0 !important}
+  .body-internal #block_47 .navbar-collapse{
+    position:fixed;top:0;left:250px;right:0;height:58px;z-index:850;
+    display:flex !important;align-items:center;
+    padding:0 20px;
+    background:color-mix(in srgb,var(--ot-ink) 55%,transparent);
+    backdrop-filter:saturate(180%) blur(18px);
+    -webkit-backdrop-filter:saturate(180%) blur(18px);
+    border-bottom:1px solid var(--ot-line-soft);
+  }
   .body-internal #block_47 .component-navbar-collapse{
     width:100%;justify-content:flex-end;align-items:center;
   }
+  .body-internal .wrapper-content{padding-top:58px}
 }
 
 /* ---- içerik ritmi: uygulama içeriği 1280px'te toplanır ---- */
@@ -1864,3 +1883,110 @@ body.body-public,body.body-internal{
   background:var(--ot-accent) !important;color:#fff !important;
   border-color:transparent !important;
 }
+
+/* sekme filtreleri (All / Pending / ...) tam pill */
+.body-internal .nav-tabs .nav-link,
+.body-internal .nav-pills .nav-link{
+  border-radius:100px !important;padding:7px 16px !important;
+  border:1px solid transparent !important;font-size:13.5px !important;
+}
+.body-internal .nav-tabs{border-bottom:0 !important;gap:4px}
+
+/* =========================================================================
+   17) İÇ PANEL — mockup katmanı (üst çubuk / sidebar / servis kartları)
+   ========================================================================= */
+
+/* ---- üst çubuk parçaları ---- */
+.body-internal .ot-bal{
+  display:inline-flex !important;flex-direction:column;align-items:flex-start;
+  gap:1px;line-height:1.15;
+  background:var(--ot-panel) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:12px !important;
+  height:auto !important;padding:6px 14px !important;
+  box-shadow:none !important;color:var(--ot-fg) !important;
+}
+.ot-bal__label{
+  font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ot-fg3);
+}
+.body-internal .ot-bal b{font-size:14px;font-weight:700;color:var(--ot-fg)}
+
+.body-internal .ot-topcta{
+  display:inline-flex;align-items:center;gap:7px;
+  height:38px;padding:0 16px;margin-left:10px;border-radius:100px;
+  background:var(--ot-accent);color:#fff !important;
+  font-size:13.5px;font-weight:600;text-decoration:none !important;
+  box-shadow:0 8px 22px -8px var(--ot-glow);
+  transition:transform .3s var(--ot-ease),box-shadow .3s;
+}
+.body-internal .ot-topcta:hover{transform:translateY(-1px);box-shadow:0 12px 28px -10px var(--ot-glow)}
+.ot-topcta svg{width:14px;height:14px}
+
+.ot-avatar{
+  width:28px;height:28px;border-radius:50%;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--ot-accent) 85%,#fff),var(--ot-accent));
+  color:#fff;font-family:"Archivo",sans-serif;
+  font-variation-settings:"wght" 700;font-size:12.5px;
+}
+.body-internal .ot-acc{display:inline-flex !important;align-items:center;gap:9px}
+
+/* ---- sidebar grupları ---- */
+.body-internal .ot-grouped{padding-bottom:86px}          /* alt kart için yer */
+.body-internal .sidebar-block__left-menu.ot-grouped::before{display:none}
+.body-internal .ot-sb-label{
+  list-style:none;
+  font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ot-fg3);
+  padding:18px 24px 6px;
+}
+.ot-sb-ico{width:16px;height:16px;flex:none;opacity:.75}
+.body-internal .component-sidebar__menu-item-active .ot-sb-ico{opacity:1;color:var(--ot-accent2)}
+
+/* alt hesap kartı */
+.body-internal .component-sidebar__menu{position:relative;height:100%}
+.body-internal .ot-sb-user{
+  position:absolute;left:10px;right:10px;bottom:12px;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:12px;
+  background:var(--ot-panel2);border:1px solid var(--ot-line-soft);
+  text-decoration:none !important;
+  transition:background .25s,border-color .25s;
+}
+.body-internal .ot-sb-user:hover{background:rgba(46,124,255,.10);border-color:var(--ot-line)}
+.ot-sb-user__txt{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.body-internal .ot-sb-user b{font-size:13.5px;color:var(--ot-fg);font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.body-internal .ot-sb-user small{font-size:11px;color:var(--ot-fg3)}
+
+/* ---- servis adı + meta çipleri ---- */
+.ot-svc__name{font-weight:600;color:var(--ot-fg);font-size:14px;letter-spacing:-.01em}
+.ot-svc__meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.ot-svc__meta span{
+  font-size:10.5px;color:var(--ot-fg3);
+  border:1px solid var(--ot-line-soft);background:var(--ot-panel);
+  padding:2px 8px;border-radius:100px;white-space:nowrap;
+}
+.ot-count{
+  margin-left:10px;vertical-align:middle;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;
+  color:var(--ot-fg3);border:1px solid var(--ot-line-soft);
+  background:var(--ot-panel);border-radius:100px;padding:3px 9px;
+}
+
+/* ---- sayfa başlığı + aksiyon ---- */
+.ot-pagehead{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:20px}
+.ot-pagehead .ot-kicker,.ot-pagehead__title{grid-column:1}
+.body-internal .ot-pagehead__cta{
+  grid-column:2;grid-row:1 / span 2;align-self:center;justify-self:end;
+  display:inline-flex;align-items:center;gap:8px;
+  height:44px;padding:0 20px;border-radius:100px;
+  background:var(--ot-accent);color:#fff !important;
+  font-size:14px;font-weight:600;text-decoration:none !important;
+  box-shadow:0 10px 26px -10px var(--ot-glow);
+  transition:transform .3s var(--ot-ease),box-shadow .3s;
+}
+.body-internal .ot-pagehead__cta:hover{transform:translateY(-1px)}
+.ot-pagehead__cta svg{width:15px;height:15px}
+@media (max-width:575px){.ot-pagehead__cta{height:40px;padding:0 16px}}

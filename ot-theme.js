@@ -71,6 +71,10 @@
       password_again: '••••••••'
     },
 
+    /* Panel içi üst çubuk ve sidebar hesap kartında görünecek isim.
+       null ise "Account" yazar, avatar "A" olur. Örn: 'Melih' */
+    accountName: 'Melih',
+
     /* Footer alt barındaki sosyal ikonlar. Adres verirsen ikon çıkar,
        boş bırakırsan hiç görünmez (uydurma link basmıyoruz).
        Örn: { x:'https://x.com/hesabin', telegram:'https://t.me/kanalin' } */
@@ -192,12 +196,160 @@
         'disabled':'bad','expired':'bad','fail':'bad'
       };
       body.querySelectorAll('table td').forEach(function (td) {
-        if (td.children.length > 1) return;
         var t = td.textContent.trim();
-        var key = t.toLowerCase();
-        if (ST[key]) { td.classList.add('ot-status', 'ot-st-' + ST[key]); return; }
+        // durum etiketi yalın metin ister; mono ise iç içe span'lerde de geçerli
+        if (td.children.length <= 1 && ST[t.toLowerCase()]) {
+          td.classList.add('ot-status', 'ot-st-' + ST[t.toLowerCase()]);
+          return;
+        }
         if (/^\d{5,}$/.test(t) || /^\d{4}-\d{2}-\d{2}/.test(t)) td.classList.add('ot-mono');
       });
+    })();
+
+    /* --- üst çubuk: Balance kutusu + Add funds + hesap avatarı --- */
+    (function topbar() {
+      var col = document.querySelector('#block_47 .component-navbar-collapse');
+      if (!col || col.getAttribute('data-ot') === 'done') return;
+      col.setAttribute('data-ot', 'done');
+      var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+
+      var bal = col.querySelector('.component-navbar-balance-item__navbar-private');
+      if (bal && !bal.querySelector('.ot-bal__label')) {
+        var val = bal.textContent.trim();
+        bal.classList.add('ot-bal');
+        bal.innerHTML = '<span class="ot-bal__label">Balance</span><b>' + esc(val) + '</b>';
+      }
+
+      if (!col.querySelector('.ot-topcta')) {
+        var li = document.createElement('li');
+        li.className = 'nav-item d-flex align-items-center';
+        li.innerHTML = '<a href="/addfunds" class="ot-topcta">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+          'stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add funds</a>';
+        var balLi = bal ? bal.closest('li') : null;
+        if (balLi && balLi.parentNode) balLi.parentNode.appendChild(li);
+      }
+
+      var acc = [].slice.call(col.querySelectorAll('a')).filter(function (a) {
+        return /\/account\/?$/.test(a.getAttribute('href') || '');
+      })[0];
+      if (acc && !acc.querySelector('.ot-avatar')) {
+        var ini = (CONFIG.accountName || 'A').charAt(0).toUpperCase();
+        acc.classList.add('ot-acc');
+        acc.innerHTML = '<span class="ot-avatar">' + esc(ini) + '</span>' + esc(acc.textContent.trim());
+      }
+    })();
+
+    /* --- sidebar: gruplar + ikonlar + alt hesap kartı --- */
+    (function sidebarGroups() {
+      var ul = document.querySelector('.sidebar-block__left-menu');
+      if (!ul || ul.getAttribute('data-ot') === 'done') return;
+      ul.setAttribute('data-ot', 'done');
+      ul.classList.add('ot-grouped');
+
+      var ICON = {
+        '/':               '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+        '/services':       '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>',
+        '/orders':         '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/>',
+        '/drip-feed':      '<path d="M12 3s6 6.3 6 10.5a6 6 0 1 1-12 0C6 9.3 12 3 12 3Z"/>',
+        '/addfunds':       '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/>',
+        '/orders/refunds': '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
+        '/api':            '<path d="m8 8-4 4 4 4M16 8l4 4-4 4"/>',
+        '/affiliates':     '<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M21 19c0-2.2-1.8-4-4-4"/>',
+        '/child-panel':    '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M9 21h6M12 17v4"/>',
+        '/tickets':        '<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/>',
+        '/massorder':      '<rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/>',
+        '/updates':        '<path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/>'
+      };
+      var GROUPS = [
+        ['Workspace', ['/', '/services', '/orders', '/drip-feed']],
+        ['Finance',   ['/addfunds', '/orders/refunds']],
+        ['Tools',     ['/api', '/affiliates', '/child-panel', '/massorder']],
+        ['Support',   ['/tickets', '/updates']]
+      ];
+
+      var byHref = {};
+      [].slice.call(ul.children).forEach(function (li) {
+        var a = li.querySelector('a'); if (!a) return;
+        byHref[a.getAttribute('href')] = li;
+      });
+
+      GROUPS.forEach(function (g) {
+        var items = g[1].map(function (h) { return byHref[h]; }).filter(Boolean);
+        if (!items.length) return;
+        var lab = document.createElement('li');
+        lab.className = 'ot-sb-label';
+        lab.textContent = g[0];
+        ul.appendChild(lab);
+        items.forEach(function (li) {
+          var a = li.querySelector('a');
+          var href = a.getAttribute('href');
+          if (ICON[href] && !a.querySelector('svg')) {
+            a.insertAdjacentHTML('afterbegin',
+              '<svg class="ot-sb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+              'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + ICON[href] + '</svg>');
+          }
+          ul.appendChild(li);
+        });
+      });
+
+      var rail = document.querySelector('.component-sidebar__menu');
+      if (rail && !rail.querySelector('.ot-sb-user')) {
+        var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+        var nm = CONFIG.accountName ? esc(CONFIG.accountName) : '';
+        var card = document.createElement('a');
+        card.href = '/account';
+        card.className = 'ot-sb-user';
+        card.innerHTML = '<span class="ot-avatar">' + (nm ? nm.charAt(0).toUpperCase() : 'A') + '</span>' +
+          '<span class="ot-sb-user__txt"><b>' + (nm || 'Account') + '</b>' +
+          (nm ? '<small>Account</small>' : '') + '</span>';
+        rail.appendChild(card);
+      }
+    })();
+
+    /* --- servis adları: "Ad [K: v] [K2: v2]" -> ad + meta çipleri --- */
+    (function serviceChips() {
+      [].slice.call(document.querySelectorAll('.wrapper-content__body td.table-service'))
+        .forEach(function (td) {
+          if (td.children.length || td.getAttribute('data-ot') === 'done') return;
+          var raw = td.textContent.trim();
+          var chips = [];
+          var base = raw.replace(/\[([^\]\[]+)\]/g, function (_, c) {
+            chips.push(c.trim()); return '';
+          }).replace(/\s{2,}/g, ' ').trim();
+          if (!chips.length) return;
+          td.setAttribute('data-ot', 'done');
+          var esc = function (s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+          td.innerHTML = '<div class="ot-svc__name">' + esc(base) + '</div>' +
+            '<div class="ot-svc__meta">' + chips.map(function (c) {
+              return '<span>' + esc(c) + '</span>';
+            }).join('') + '</div>';
+        });
+
+      [].slice.call(document.querySelectorAll('.services-list-category-title'))
+        .forEach(function (tr) {
+          var n = 0, x = tr.nextElementSibling;
+          while (x && !x.classList.contains('services-list-category-title')) {
+            if (x.querySelector && x.querySelector('td')) n++;
+            x = x.nextElementSibling;
+          }
+          var h = tr.querySelector('h4');
+          if (h && n && !h.querySelector('.ot-count')) {
+            h.insertAdjacentHTML('beforeend', '<span class="ot-count">' + n + ' services</span>');
+          }
+        });
+    })();
+
+    /* --- sayfa başlığına aksiyon butonu (New order sayfası hariç) --- */
+    (function pageheadCta() {
+      var head = document.querySelector('.ot-pagehead');
+      if (!head || head.querySelector('.ot-pagehead__cta')) return;
+      var act = document.querySelector('.component-sidebar__menu-item-active a');
+      if (act && act.getAttribute('href') === '/') return;
+      head.insertAdjacentHTML('beforeend',
+        '<a href="/" class="ot-pagehead__cta">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+        'stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New order</a>');
     })();
   }
 
