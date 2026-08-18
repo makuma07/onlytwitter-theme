@@ -71,6 +71,11 @@
       password_again: '••••••••'
     },
 
+    /* Servis adlarındaki [Refill: 7days] gibi köşeli parantezleri ayırıp
+       isim + çip olarak göster. false: tam isim olduğu gibi kalır.
+       (Çipli görünüm bilgiyi kısaltıyor; varsayılan tam isim.) */
+    serviceChips: false,
+
     /* Panel içi üst çubuk ve sidebar hesap kartında görünecek isim.
        null ise "Account" yazar, avatar "A" olur. Örn: 'Melih' */
     accountName: 'Melih',
@@ -307,8 +312,10 @@
       }
     })();
 
-    /* --- servis adları: "Ad [K: v] [K2: v2]" -> ad + meta çipleri --- */
+    /* --- servis adları: "Ad [K: v] [K2: v2]" -> ad + meta çipleri
+       (yalnızca CONFIG.serviceChips = true ise) --- */
     (function serviceChips() {
+      if (CONFIG.serviceChips)
       [].slice.call(document.querySelectorAll('.wrapper-content__body td.table-service'))
         .forEach(function (td) {
           if (td.children.length || td.getAttribute('data-ot') === 'done') return;
