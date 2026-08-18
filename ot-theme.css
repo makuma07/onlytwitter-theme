@@ -252,13 +252,36 @@ body.body-public{
   transform:translateY(-2px);box-shadow:0 18px 40px -12px var(--ot-glow) !important;
 }
 
-/* Mobilde pill'ler tam genişlik, sıralama sıfırlanır */
+/* ---- MOBİL MENÜ ----
+   Panel mobilde navbar'a yatay boşluk vermiyor: hamburger ve pill butonlar
+   ekranın kenarına yapışıyordu. Sıralama da DOM sırasına düşüyordu
+   (Sign in / Services / API / Sign up / Blog). İkisini de düzeltiyoruz. */
 @media (max-width:991px){
-  .body-public .navbar-nav{flex-direction:column;align-items:stretch;gap:2px}
-  .body-public .navbar-nav .nav-item{order:0 !important;margin-left:0 !important}
+  .body-public #block_46 .navbar{padding-inline:20px !important}
+  .body-public #block_46 .navbar-collapse{padding-inline:0}
+
+  .body-public .navbar-nav{flex-direction:column;align-items:stretch;gap:0}
+  /* masaüstündeki sıra korunur: linkler üstte, butonlar altta */
+  .body-public .navbar-nav .nav-item{margin-left:0 !important}
+  .body-public .navbar-nav .nav-item:has(a[href="/"]){margin-top:16px}
+
+  .body-public .component-navbar-nav-link{
+    margin-inline:0 !important;padding:11px 0 !important;font-size:15px !important;
+  }
+  .body-public .component-navbar-nav-link::after{display:none}
+
   .body-public .navbar .navbar-nav .nav-item a[href="/"],
   .body-public .navbar .navbar-nav .nav-item a[href="/signup"]{
-    width:100%;height:46px !important;margin:6px 0 0 !important;
+    width:100%;height:48px !important;margin:0 0 8px !important;
+  }
+
+  /* hamburger: 42px dairenin içinde 16px çizgiler */
+  .body-public .navbar-toggler{padding:0 !important;flex:none}
+  .body-public .navbar-burger{display:flex !important;align-items:center;justify-content:center}
+  .body-public .navbar-burger-line,
+  .body-public .navbar-burger-line::before,
+  .body-public .navbar-burger-line::after{
+    width:16px !important;height:1.6px !important;border-radius:2px;
   }
 }
 .body-public .navbar-burger-line,
@@ -521,10 +544,14 @@ body.body-public{
 .body-public #block_55 .col-ed:nth-child(2) .features-block__card::after{content:"02"}
 .body-public #block_55 .col-ed:nth-child(3) .features-block__card::after{content:"03"}
 .body-public #block_55 .col-ed:nth-child(4) .features-block__card::after{content:"04"}
-/* kartlar eşit yükseklikte olsun */
-.body-public #block_55 .col-ed,
-.body-public #block_55 .col-ed-elements,
-.body-public #block_55 .col-ed-elements--element{height:100%}
+/* Kartlar eşit yükseklikte olsun.
+   DİKKAT: burada `height:100%` KULLANILMAZ — satır sarıldığında (mobil)
+   yüzde, tüm satır yığınının yüksekliğine göre hesaplanıp kartları
+   1000px+ şişiriyor. Flex zinciri her iki durumda da doğru çalışır. */
+.body-public #block_55 .col-ed{display:flex}
+.body-public #block_55 .col-ed-elements{display:flex;flex:1;min-width:0}
+.body-public #block_55 .col-ed-elements--element{display:flex;flex:1;min-width:0}
+.body-public #block_55 .features-block__card{flex:1}
 
 /* -------------------------------------------------------------------------
    7) İSTATİSTİKLER (#block_98)
