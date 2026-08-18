@@ -985,10 +985,30 @@ body.body-public{
   font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--ot-fg3);margin:0 0 18px;font-weight:500;
 }
-.ot-fgrid a{display:block;font-size:14px;color:var(--ot-fg2);padding:6px 0;text-decoration:none;
-  transition:color .25s,transform .25s var(--ot-ease)}
-.ot-fgrid a:hover{color:var(--ot-fg);transform:translateX(3px)}
-.ot-fgrid p{margin:0;color:var(--ot-fg3);font-size:14px;max-width:36ch;font-weight:350;line-height:1.65}
+.body-public .ot-fgrid a{
+  display:block;font-size:14px;color:var(--ot-fg2) !important;padding:6px 0;
+  text-decoration:none;transition:color .25s,transform .25s var(--ot-ease);
+}
+.body-public .ot-fgrid a:hover{color:var(--ot-fg) !important;transform:translateX(3px)}
+.ot-fgrid p{margin:16px 0 0;color:var(--ot-fg3);font-size:14px;max-width:36ch;font-weight:350;line-height:1.65}
+.body-public a.ot-fbrand{
+  font-family:"Archivo",sans-serif;font-variation-settings:"wdth" 78,"wght" 800;
+  font-size:17px;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--ot-fg) !important;display:inline-flex;align-items:center;gap:9px;padding:0;
+}
+.body-public a.ot-fbrand:hover{transform:none}
+.body-public a.ot-fbrand::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--ot-accent);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--ot-accent) 18%,transparent);flex:none;
+}
+/* alt bar */
+.ot-fbot{
+  padding-top:26px;border-top:1px solid var(--ot-line-soft);
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-size:13px;color:var(--ot-fg3);
+}
+.body-public .ot-fbot a{color:var(--ot-fg3) !important;text-decoration:none}
+.body-public .ot-fbot a:hover{color:var(--ot-fg) !important}
 
 /* ---- servis tablosu (yalnızca CONFIG.services doldurulursa) ---- */
 .ot-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0}

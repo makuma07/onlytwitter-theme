@@ -50,6 +50,11 @@
       block_54: { title: 'Questions, answered.' }
     },
 
+    /* Kod pencerelerinin başlık çubuğunda yazan adres.
+       Varsayılan: panelin kendi dokümanındaki "API URL" değeri (/api/v2).
+       Başka bir şey yazsın istersen buraya yaz, ör. 'https://onlytwitter.com/api' */
+    apiEndpoint: null,
+
     /* Panelde olmayan, demo'ya özel bölümler. false yaparsan eklenmez. */
     sections: {
       heroCta:   true,   // hero'daki iki buton + güven satırı
@@ -475,7 +480,8 @@
       if (f) {
         var cols = make(
           '<div class="ot-wrap"><div class="ot-fgrid">' +
-            '<div><p>An affordable and reliable SMM panel for social media followers, ' +
+            '<div><a href="/" class="ot-fbrand">' + location.hostname.replace(/^www\./, '') + '</a>' +
+            '<p>An affordable and reliable SMM panel for social media followers, ' +
             'likes, views and engagement services.</p></div>' +
             '<div><h4>Panel</h4>' +
               '<a href="/services">Services</a><a href="/">Sign in</a>' +
@@ -487,6 +493,19 @@
           '</div></div>'
         );
         f.insertBefore(cols, f.firstChild);
+
+        /* Alt bar. Panelin kendi footer bloğu (telif satırı) duruyorsa
+           ona dokunmuyoruz; boşsa demo'daki alt barı biz basıyoruz. */
+        var hasOwn = /copyright|©/i.test(f.textContent);
+        if (!hasOwn) {
+          f.appendChild(make(
+            '<div class="ot-wrap"><div class="ot-fbot">' +
+              '<span>© ' + new Date().getFullYear() + ' ' +
+              location.hostname.replace(/^www\./, '') + ' — All rights reserved.</span>' +
+              '<a href="/terms">Terms</a>' +
+            '</div></div>'
+          ));
+        }
       }
     }
   })();
