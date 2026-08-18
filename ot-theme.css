@@ -847,10 +847,15 @@ body.body-public{
   background:color-mix(in srgb,var(--ot-accent) 12%,transparent);
   padding:4px 9px;border-radius:6px;
 }
-/* solda parametreler, sağda örnek yanıt */
+/* solda parametreler, sağda örnek yanıt
+   grid-template-rows ŞART: sol sütun iki satırı birden kapladığı için
+   tarayıcı fazla yüksekliği iki satıra eşit paylaştırıyor ve "Example
+   response" etiketi ile kod bloğu arasında kocaman boşluk kalıyor.
+   auto/1fr diyerek fazlalığın tamamını alt satıra veriyoruz. */
 .ot-endpoint__body{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:22px;align-items:start;
+  grid-template-rows:auto 1fr;
+  gap:10px 22px;align-items:start;
 }
 .ot-endpoint__body > *:nth-child(1){grid-column:1;grid-row:1 / span 2}
 .ot-endpoint__body > *:nth-child(2){grid-column:2;grid-row:1}
@@ -1105,6 +1110,17 @@ body.body-public{
 }
 .body-public .ot-fbot a{color:var(--ot-fg3) !important;text-decoration:none}
 .body-public .ot-fbot a:hover{color:var(--ot-fg) !important}
+/* sosyal ikonlar (yalnızca CONFIG.social doluysa) */
+.ot-fsocial{display:flex;gap:10px}
+.body-public .ot-fsocial a{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--ot-line-soft);
+  display:grid;place-items:center;transition:all .3s var(--ot-ease);
+}
+.body-public .ot-fsocial a:hover{
+  background:var(--ot-fg);color:var(--ot-ink) !important;
+  border-color:transparent;transform:translateY(-3px);
+}
+.ot-fsocial svg{width:14px;height:14px;fill:currentColor}
 
 /* ---- servis tablosu (yalnızca CONFIG.services doldurulursa) ---- */
 .ot-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0}

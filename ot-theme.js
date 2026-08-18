@@ -59,6 +59,11 @@
        (onlytwitter.com -> onlytwitter). */
     brand: null,
 
+    /* Footer alt barındaki sosyal ikonlar. Adres verirsen ikon çıkar,
+       boş bırakırsan hiç görünmez (uydurma link basmıyoruz).
+       Örn: { x:'https://x.com/hesabin', telegram:'https://t.me/kanalin' } */
+    social: {},
+
     /* Panelde olmayan, demo'ya özel bölümler. false yaparsan eklenmez. */
     sections: {
       heroCta:   true,   // hero'daki iki buton + güven satırı
@@ -464,6 +469,22 @@
       return d.firstElementChild;
     }
 
+    /* Footer alt barındaki sosyal ikonlar — yalnızca CONFIG.social doldurulursa.
+       Uydurma adres basmamak için varsayılan boş. */
+    function socialLinks() {
+      var S2 = CONFIG.social || {};
+      var ICON = {
+        x:        'M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.25 6.93ZM17.61 20.64h2.04L6.49 3.24H4.3Z',
+        telegram: 'M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm4.91 7.22c.1 0 .32.02.47.14a.5.5 0 0 1 .17.33c.02.09.04.3.02.47-.18 1.9-.96 6.5-1.36 8.63-.17.9-.5 1.2-.82 1.23-.7.06-1.23-.46-1.9-.9-1.06-.7-1.65-1.13-2.68-1.8-1.19-.78-.42-1.21.26-1.91.17-.19 3.24-2.98 3.3-3.23.01-.03.01-.15-.06-.21-.07-.06-.17-.04-.25-.02-.1.02-1.79 1.14-5.06 3.34-.48.33-.91.49-1.3.48-.43 0-1.25-.24-1.87-.44-.75-.24-1.35-.37-1.3-.79.03-.21.33-.44.9-.66 3.5-1.52 5.83-2.53 7-3.01 3.33-1.39 4.02-1.63 4.48-1.64Z',
+        youtube:  'M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.87.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z'
+      };
+      var out = Object.keys(ICON).filter(function (k) { return S2[k]; }).map(function (k) {
+        return '<a href="' + S2[k] + '" target="_blank" rel="noopener" aria-label="' + k + '">' +
+               '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + ICON[k] + '"/></svg></a>';
+      });
+      return out.length ? '<div class="ot-fsocial">' + out.join('') + '</div>' : '';
+    }
+
     /* --- servis tablosu (yalnızca ana sayfa + CONFIG.services doluysa) --- */
     if (isHome && CONFIG.services && CONFIG.services.length) {
       var tabs = [];
@@ -606,10 +627,12 @@
         var hasOwn = /copyright|©/i.test(f.textContent);
         if (!hasOwn) {
           f.appendChild(make(
+            /* Terms zaten COMPANY sütununda — alt barda tekrarlamıyoruz.
+               Sosyal hesap adresleri verilirse sağ tarafa ikonlar gelir. */
             '<div class="ot-wrap"><div class="ot-fbot">' +
               '<span>© ' + new Date().getFullYear() + ' ' + BRAND +
               ' — All rights reserved.</span>' +
-              '<a href="/terms">Terms</a>' +
+              socialLinks() +
             '</div></div>'
           ));
         }
