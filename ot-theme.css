@@ -551,6 +551,55 @@ body.body-public{
 }
 
 /* -------------------------------------------------------------------------
+   5d) METİN SAYFALARI (Terms vb. — .text-block-with-card)
+   Uzun metin için okunaklı satır genişliği ve nefes payı.
+   ---------------------------------------------------------------------- */
+.body-public .text-block-with-card{
+  max-width:820px;margin-inline:auto;padding-block:clamp(32px,5vw,64px);
+}
+/* :not() zincirli genel kart kuralından daha özgül olmak zorunda */
+.body-public .text-block-with-card .card:not(.col-ed):not(.how-it-works-card){
+  background:transparent !important;border:0 !important;
+  box-shadow:none !important;padding:0 !important;backdrop-filter:none !important;
+}
+.body-public .text-block-with-card h2{
+  font-size:clamp(32px,4.2vw,48px) !important;
+  font-variation-settings:"wdth" 88,"wght" 720;
+  margin:0 0 8px !important;
+}
+.body-public .text-block-with-card h3,
+.body-public .text-block-with-card h4{
+  font-variation-settings:"wdth" 90,"wght" 660;
+  font-size:19px !important;margin:38px 0 12px !important;
+}
+.body-public .text-block-with-card p,
+.body-public .text-block-with-card li{
+  font-size:15.5px;line-height:1.75;font-weight:350;color:var(--ot-fg2) !important;
+}
+/* madde listesi (panel <ol> basıyor): numara yerine ince ayraçlı bloklar */
+.body-public .text-block-with-card ul,
+.body-public .text-block-with-card ol{
+  list-style:none !important;margin:26px 0 0 !important;padding:0 !important;
+  counter-reset:ot-item;
+}
+.body-public .text-block-with-card ul > li,
+.body-public .text-block-with-card ol > li{
+  position:relative;padding:18px 0 18px 42px;
+  border-top:1px solid var(--ot-line-soft);
+}
+.body-public .text-block-with-card ol > li::before{
+  counter-increment:ot-item;content:counter(ot-item,decimal-leading-zero);
+  position:absolute;left:0;top:19px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ot-fg3);
+}
+.body-public .text-block-with-card ul > li{padding-left:0}
+.body-public .text-block-with-card ul > li:last-child,
+.body-public .text-block-with-card ol > li:last-child{
+  border-bottom:1px solid var(--ot-line-soft);
+}
+.body-public .text-block-with-card a{color:var(--ot-accent2)}
+
+/* -------------------------------------------------------------------------
    6) ÖZELLİK KARTLARI (#block_55)
    ---------------------------------------------------------------------- */
 .body-public .features-block__card{
