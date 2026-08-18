@@ -247,7 +247,8 @@
         'processing':'wait','in progress':'wait','inprogress':'wait',
         'queued':'wait','partial':'part','refunded':'part',
         'canceled':'bad','cancelled':'bad','error':'bad','failed':'bad',
-        'disabled':'bad','expired':'bad','fail':'bad'
+        'disabled':'bad','expired':'bad','fail':'bad',
+        'answered':'ok','open':'wait','closed':'off','resolved':'off'
       };
       body.querySelectorAll('table td').forEach(function (td) {
         var t = td.textContent.trim();
@@ -451,6 +452,27 @@
         row.appendChild(a);
         cell.classList.add('ot-actions');
       });
+    })();
+
+    /* --- Tickets listesi: tarih -> göreli zaman ("2 months ago") --- */
+    (function ticketsRelTime() {
+      [].slice.call(document.querySelectorAll('.tickets-list tbody td:last-child'))
+        .forEach(function (td) {
+          if (td.getAttribute('data-ot') === 'done') return;
+          var t = td.textContent.trim().replace(/\s+/g, ' ');
+          var mm = t.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/);
+          if (!mm) return;
+          var d = new Date(+mm[1], +mm[2] - 1, +mm[3], +mm[4], +mm[5]);
+          var mins = Math.floor((Date.now() - d.getTime()) / 60000);
+          if (mins < 0) return;
+          var rel = mins < 60 ? mins + ' min ago'
+                  : mins < 1440 ? Math.floor(mins / 60) + ' hours ago'
+                  : mins < 43200 ? Math.floor(mins / 1440) + ' days ago'
+                  : Math.floor(mins / 43200) + ' months ago';
+          td.setAttribute('data-ot', 'done');
+          td.setAttribute('title', t);
+          td.textContent = rel;
+        });
     })();
 
     /* --- bilet görünümü: satırları thread başlıklarına dönüştür --- */

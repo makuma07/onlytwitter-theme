@@ -2356,12 +2356,15 @@ html:has(.body-internal){overflow-y:scroll}
 }
 
 /* ---- bilet thread'i: mockup ölçüleri ---- */
-/* avatarlar mockup'taki gibi 36px (yalnızca thread başlıklarında) */
-.ot-tmsg__head .ot-avatar{width:36px;height:36px;font-size:14px}
-.ot-tmsg__head .ot-avatar--staff svg{width:17px;height:17px}
+/* avatarlar 42px (yalnızca thread başlıklarında) */
+.ot-tmsg__head .ot-avatar{
+  width:42px;height:42px;font-size:16px;line-height:1;
+  padding-top:2px;   /* büyük harf em-kutusunda yukarı oturur — optik merkez */
+}
+.ot-tmsg__head .ot-avatar--staff svg{width:20px;height:20px}
 .ot-tmsg__head b{font-size:14.5px}
-/* içerik isimle aynı hizada: 36px avatar + 12px boşluk */
-.body-internal .ot-tmsg .ticket-dialog__row-message{padding-left:48px !important}
+/* içerik isimle aynı hizada: 42px avatar + 12px boşluk */
+.body-internal .ot-tmsg .ticket-dialog__row-message{padding-left:54px !important}
 .ot-tmsg__head{gap:12px}
 /* panelin destek satırına verdiği içeriden başlatma girintisi kalksın —
    iki taraf da aynı soldan başlar (mockup) */
@@ -2387,4 +2390,52 @@ html:has(.body-internal){overflow-y:scroll}
 .ot-tmeta__oid b{
   color:#4ADE80 !important;
   text-shadow:0 0 12px rgba(74,222,128,.55);
+}
+
+/* ---- Tickets listesi: satırlar kart (mockup) ----
+   Mockup'taki toplam sayaçları ve sekme rozetleri bilerek YOK: panel toplam
+   vermiyor; görünen sayfadan saymak yanlış rakam basar. */
+.body-internal .tickets-list table{
+  border-collapse:separate !important;border-spacing:0 10px;
+  border:0 !important;background:transparent !important;overflow:visible;
+}
+.body-internal .tickets-list thead th{
+  background:transparent !important;border:0 !important;
+}
+.body-internal .tickets-list tbody td{
+  background:var(--ot-panel) !important;
+  border-top:1px solid var(--ot-line-soft) !important;
+  border-bottom:1px solid var(--ot-line-soft) !important;
+  border-left:0 !important;border-right:0 !important;
+  padding:16px !important;
+}
+.body-internal .tickets-list tbody td:first-child{
+  border-left:1px solid var(--ot-line-soft) !important;
+  border-radius:14px 0 0 14px;
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:12px !important;color:var(--ot-fg3) !important;
+  width:80px;
+}
+.body-internal .tickets-list tbody td:last-child{
+  border-right:1px solid var(--ot-line-soft) !important;
+  border-radius:0 14px 14px 0;
+  text-align:right;color:var(--ot-fg3) !important;font-size:13px !important;
+}
+.body-internal .tickets-list tbody tr:hover td{
+  background:var(--ot-panel2) !important;border-color:var(--ot-line) !important;
+}
+/* konu başlığı: "sessiz link" kuralı (0,4,2) bunu eziyordu — eşleşen
+   :not zinciriyle özgüllük yükseltildi */
+.body-internal .tickets-list .table td a:not(.btn):not(.ot-order-btn){
+  color:var(--ot-fg) !important;text-decoration:none !important;
+  font-size:15px;letter-spacing:-.01em;max-width:none !important;
+}
+.body-internal .tickets-list .table td a:not(.btn):not(.ot-order-btn):hover{
+  color:var(--ot-accent2) !important;
+}
+/* kapalı/çözülmüş: nötr gri durum */
+.body-internal td.ot-st-off{color:var(--ot-fg3) !important;font-weight:600;font-size:13px !important;white-space:nowrap}
+.body-internal td.ot-st-off::before{
+  content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  margin-right:8px;vertical-align:middle;background:var(--ot-fg3);
 }
