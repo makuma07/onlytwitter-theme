@@ -583,8 +583,8 @@
       if (anchor) anchor.parentNode.insertBefore(api, anchor.nextSibling);
     }
 
-    /* --- CTA bandı --- */
-    if (S.cta !== false && !$('.ot-cta')) {
+    /* --- CTA bandı (sadece ana sayfa; API/Terms gibi sayfalarda gereksiz) --- */
+    if (isHome && S.cta !== false && !$('.ot-cta')) {
       var cta = make(
         '<section class="ot-sec"><div class="ot-wrap"><div class="ot-cta">' +
           '<div class="ot-cta__glow"></div>' +
