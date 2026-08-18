@@ -55,6 +55,10 @@
        Başka bir şey yazsın istersen buraya yaz, ör. 'https://onlytwitter.com/api' */
     apiEndpoint: null,
 
+    /* Footer'da görünecek marka adı. null ise alan adından uzantısız türetilir
+       (onlytwitter.com -> onlytwitter). */
+    brand: null,
+
     /* Panelde olmayan, demo'ya özel bölümler. false yaparsan eklenmez. */
     sections: {
       heroCta:   true,   // hero'daki iki buton + güven satırı
@@ -383,6 +387,9 @@
     if (!body || !$('#block_56')) return;   // sadece ana sayfa
 
     var S = CONFIG.sections || {};
+    // Marka adı: uzantısız alan adı (onlytwitter.com -> onlytwitter)
+    var BRAND = CONFIG.brand ||
+      location.hostname.replace(/^www\./, '').replace(/\.[a-z.]+$/i, '');
     var totalServices = ($('#block_98 .totals-card__count-value') || {}).textContent;
     totalServices = totalServices ? totalServices.trim() : '';
 
@@ -515,7 +522,7 @@
       if (f) {
         var cols = make(
           '<div class="ot-wrap"><div class="ot-fgrid">' +
-            '<div><a href="/" class="ot-fbrand">' + location.hostname.replace(/^www\./, '') + '</a>' +
+            '<div><a href="/" class="ot-fbrand">' + BRAND + '</a>' +
             '<p>An affordable and reliable SMM panel for social media followers, ' +
             'likes, views and engagement services.</p></div>' +
             '<div><h4>Panel</h4>' +
@@ -535,8 +542,8 @@
         if (!hasOwn) {
           f.appendChild(make(
             '<div class="ot-wrap"><div class="ot-fbot">' +
-              '<span>© ' + new Date().getFullYear() + ' ' +
-              location.hostname.replace(/^www\./, '') + ' — All rights reserved.</span>' +
+              '<span>© ' + new Date().getFullYear() + ' ' + BRAND +
+              ' — All rights reserved.</span>' +
               '<a href="/terms">Terms</a>' +
             '</div></div>'
           ));
