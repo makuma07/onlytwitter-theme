@@ -1836,8 +1836,11 @@ body.body-public,body.body-internal{
   white-space:nowrap;
 }
 
-/* ---- tablo içi uzun linkler tek satırda kısalır ---- */
-.body-internal .table td a:not(.btn){
+/* ---- tablo içi uzun linkler tek satırda kısalır ----
+   DİKKAT: .ot-order-btn de bir <a> ve .btn sınıfı taşımıyor — bu kural onu
+   yakalayıp inline-block yapınca "Create" yazısı butonun tepesine
+   yapışıyordu. Açıkça hariç tutuluyor. */
+.body-internal .table td a:not(.btn):not(.ot-order-btn){
   display:inline-block;max-width:230px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   vertical-align:middle;
