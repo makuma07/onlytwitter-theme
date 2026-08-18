@@ -2543,3 +2543,154 @@ html:has(.body-internal){overflow-y:scroll}
 }
 /* buton pagehead grid'inde sağda (pageheadCta stilini paylaşır) */
 .body-internal button.ot-pagehead__cta{border:0;cursor:pointer}
+
+/* ---- Create New Ticket modalı ---- */
+.ot-noscroll{overflow:hidden}
+.ot-modalov{
+  position:fixed;inset:0;z-index:1200;display:none;
+  background:rgba(5,6,10,.72);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  padding:4vh 16px;overflow-y:auto;
+}
+.ot-modalov.on{display:flex;align-items:flex-start;justify-content:center}
+.ot-modalbox{
+  width:100%;max-width:860px;
+  background:var(--ot-ink2);border:1px solid var(--ot-line);
+  border-radius:20px;box-shadow:0 40px 90px -30px rgba(0,0,0,.9);
+  animation:ot-pop .25s var(--ot-ease);
+}
+@keyframes ot-pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.ot-modalbox__head{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:22px 24px;border-bottom:1px solid var(--ot-line-soft);
+}
+.ot-modalbox__head h3{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 88,"wght" 700;
+  font-size:21px !important;letter-spacing:-.02em !important;
+  margin:0 0 4px !important;color:var(--ot-fg) !important;
+}
+.ot-modalbox__head p{margin:0;font-size:13.5px;color:var(--ot-fg2);font-weight:350}
+.ot-modalbox__x{
+  margin-left:auto;flex:none;width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--ot-line-soft);color:var(--ot-fg3);
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:color .2s,border-color .2s;
+}
+.ot-modalbox__x:hover{color:var(--ot-fg);border-color:var(--ot-line)}
+.ot-modalbox__x svg{width:15px;height:15px}
+.ot-modalbox__body{padding:22px 24px 24px}
+.ot-modalbox__body .ticket-form .card{
+  background:transparent !important;border:0 !important;
+  box-shadow:none !important;padding:0 !important;
+}
+
+/* segment butonlar (kategori / alt kategori) */
+.ot-seg{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.ot-seg__select{
+  position:absolute !important;width:1px;height:1px;opacity:0;
+  pointer-events:none;margin:0;
+}
+.body-internal .ot-seg__btn{
+  flex:1 1 0;min-width:130px;height:46px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  background:rgba(7,8,10,.45);border:1px solid var(--ot-line);
+  border-radius:12px;color:var(--ot-fg2);
+  font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.body-internal .ot-seg__btn svg{width:16px;height:16px}
+.body-internal .ot-seg__btn:hover{color:var(--ot-fg);border-color:var(--ot-line)}
+.body-internal .ot-seg__btn.on{
+  color:var(--ot-accent2);border-color:rgba(46,124,255,.55);
+  background:rgba(46,124,255,.08);
+}
+
+/* ipuçları */
+.ot-hint{margin-top:7px;font-size:12px;color:var(--ot-fg3)}
+
+/* dosya alanı: kesikli bırakma bölgesi (panel içerik basmadıysa metin bizden) */
+.body-internal .ot-modalbox .tickets-uploader{
+  border:1px dashed var(--ot-line);border-radius:14px;
+  min-height:96px;display:flex;align-items:center;justify-content:center;
+  color:var(--ot-fg3);font-size:13px;padding:16px;
+  transition:border-color .2s;
+}
+.body-internal .ot-modalbox .tickets-uploader:hover{border-color:rgba(46,124,255,.5)}
+.body-internal .ot-modalbox .tickets-uploader:empty::before{
+  content:"Drag & drop files here or click to upload";
+}
+
+/* Submit Ticket sağda */
+.body-internal .ot-modalbox .ot-submit-right{
+  display:inline-flex !important;align-items:center;gap:8px;
+  width:auto !important;height:44px;padding:0 20px !important;
+  margin-left:auto;
+}
+.body-internal .ot-modalbox .ot-submit-right svg{width:14px;height:14px}
+.body-internal .ot-modalbox .component_button_submit{display:flex;justify-content:flex-end}
+
+@media (max-width:575px){
+  .ot-modalov{padding:0}
+  .ot-modalbox{border-radius:0;min-height:100vh}
+  .body-internal .ot-seg__btn{min-width:100px}
+}
+
+/* ---- modal içi: mockup tipografisi ve yüzeyleri ---- */
+/* etiketler: mono-caps değil, normal yazı + bilgi ikonu */
+.body-internal .ot-modalbox .form-group label{
+  font-family:"Manrope",sans-serif !important;
+  font-size:13.5px !important;font-weight:600 !important;
+  letter-spacing:0 !important;text-transform:none !important;
+  color:var(--ot-fg) !important;
+  display:flex;align-items:center;gap:7px;margin-bottom:10px;
+}
+.ot-info{width:14px;height:14px;color:var(--ot-fg3);flex:none}
+
+/* segment butonlar: dolgusuz, ince kenarlık (mockup) */
+.body-internal .ot-modalbox .ot-seg__btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,.08);
+  height:48px;border-radius:10px;
+  color:var(--ot-fg2);font-weight:500;
+}
+.body-internal .ot-modalbox .ot-seg__btn:hover{
+  border-color:rgba(255,255,255,.16);color:var(--ot-fg);background:transparent;
+}
+.body-internal .ot-modalbox .ot-seg__btn.on{
+  border-color:rgba(46,124,255,.65);
+  background:rgba(46,124,255,.05);
+  color:var(--ot-accent2);
+}
+
+/* alanlar: ince kenarlık, yumuşak köşe, hafif zemin */
+.body-internal .ot-modalbox .form-control,
+.body-internal .ot-modalbox input[type=text],
+.body-internal .ot-modalbox textarea{
+  background:rgba(7,8,10,.35) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  border-radius:10px !important;
+}
+.body-internal .ot-modalbox textarea{min-height:118px;height:auto}
+.body-internal .ot-modalbox .form-control:focus{
+  border-color:rgba(46,124,255,.55) !important;
+  box-shadow:0 0 0 4px rgba(46,124,255,.10) !important;
+}
+.body-internal .ot-modalbox .form-group{margin-bottom:20px}
+
+/* dosya alanı içeriği (JS basar): bulut + iki satır */
+.ot-up{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ot-fg2)}
+.ot-up svg{width:26px;height:26px;color:var(--ot-fg3)}
+.ot-up small{font-size:11.5px;color:var(--ot-fg3)}
+
+
+/* modal içi submit: gölge yok (mavi hale olarak algılanıyordu) */
+.body-internal .ot-modalbox .ot-submit-right{box-shadow:none !important}
+/* input focus halkasını inceltip mavi çerçeve algısını azalt */
+.body-internal .ot-modalbox .form-control:focus{
+  box-shadow:0 0 0 2px rgba(46,124,255,.18) !important;
+}
+
+/* modal içindeki form kartı ot-primary'nin mavi degrade kenarlığını almaz
+   ("Category" üstünde ince mavi çizgi oluşuyordu) */
+.ot-modalbox .ot-primary::before{display:none !important}

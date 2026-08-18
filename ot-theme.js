@@ -475,13 +475,16 @@
         });
     })();
 
-    /* --- Tickets: form gizli, başlıkta "+ New Ticket" ile açılır --- */
-    (function newTicketToggle() {
+    /* --- Tickets: "Create New Ticket" modalı ---
+       Gerçek form node olarak modala TAŞINIR (alanlar/CSRF/uploader korunur).
+       Select'ler ikonlu segment butonlara vekillenir: buton -> select.value +
+       change eventi => panelin kendi JS'i canlıda aynen çalışır. --- */
+    (function newTicketModal() {
       var form = document.querySelector('.ticket-form');
       var head = document.querySelector('.ot-pagehead');
-      if (!form || !head || head.querySelector('.ot-newticket')) return;
+      if (!form || !head || document.querySelector('.ot-modalov')) return;
+      var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
 
-      /* başlık altına karşılama satırı */
       if (!head.querySelector('.ot-pagehead__sub')) {
         var sub = document.createElement('p');
         sub.className = 'ot-pagehead__sub';
@@ -489,25 +492,151 @@
         head.appendChild(sub);
       }
 
+      /* ---- modal iskeleti ---- */
+      var ov = document.createElement('div');
+      ov.className = 'ot-modalov';
+      ov.innerHTML =
+        '<div class="ot-modalbox" role="dialog" aria-modal="true">' +
+          '<div class="ot-modalbox__head">' +
+            '<div><h3>Create New Ticket</h3>' +
+            '<p>Fill out the form below and our support team will get back to you as soon as possible.</p></div>' +
+            '<button type="button" class="ot-modalbox__x" aria-label="Close">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+            'stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>' +
+          '</div><div class="ot-modalbox__body"></div>' +
+        '</div>';
+      document.body.appendChild(ov);
+      ov.querySelector('.ot-modalbox__body').appendChild(form);
+
+      function openM() { ov.classList.add('on'); document.body.classList.add('ot-noscroll'); }
+      function closeM() { ov.classList.remove('on'); document.body.classList.remove('ot-noscroll'); }
+      ov.addEventListener('click', function (e) { if (e.target === ov) closeM(); });
+      ov.querySelector('.ot-modalbox__x').addEventListener('click', closeM);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeM(); });
+
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ot-pagehead__cta ot-newticket';
       btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
         'stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>New Ticket';
+      btn.addEventListener('click', openM);
       head.appendChild(btn);
 
-      /* sunucu hata döndürdüyse form açık gelsin, yoksa gizli */
-      var hasError = !!form.querySelector('.alert:not([style*="display: none"]):not(.hidden)');
-      if (!hasError) form.classList.add('ot-collapsed');
+      /* sunucu hatasıyla dönüldüyse modal açık gelsin */
+      if (form.querySelector('.alert:not(.hidden):not([style*="display: none"])')) openM();
 
-      btn.addEventListener('click', function () {
-        var closed = form.classList.toggle('ot-collapsed');
-        if (!closed) {
-          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          var f = form.querySelector('select, input, textarea');
-          if (f) setTimeout(function () { f.focus(); }, 350);
+      /* ---- select -> ikonlu segment butonlar ---- */
+      var ICONS = [
+        [/order/i,   '<rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 7V6a4 4 0 0 1 8 0v1"/>'],
+        [/payment/i, '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/>'],
+        [/refill/i,  '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'],
+        [/cancel/i,  '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>'],
+        [/speed/i,   '<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12Z"/>'],
+        [/partial/i, '<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.4 6.4"/>'],
+        [/.*/,       '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>']
+      ];
+      function iconFor(label) {
+        for (var i = 0; i < ICONS.length; i++)
+          if (ICONS[i][0].test(label)) return ICONS[i][1];
+      }
+      function segmentize(sel) {
+        var wrap = document.createElement('div');
+        wrap.className = 'ot-seg';
+        sel.classList.add('ot-seg__select');
+        sel.parentNode.insertBefore(wrap, sel);
+        function render() {
+          wrap.innerHTML = '';
+          [].slice.call(sel.options).forEach(function (op) {
+            if (!op.value && /choose|select/i.test(op.textContent)) return;
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'ot-seg__btn' + (op.value === sel.value ? ' on' : '');
+            b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+              'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+              iconFor(op.textContent) + '</svg>' + esc(op.textContent.trim());
+            b.addEventListener('click', function () {
+              sel.value = op.value;
+              /* Panel select2/jQuery kullanıyor — native + jQuery change ikisi
+                 de tetiklenir ki alt kategori/AJAX mantığı canlıda çalışsın */
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+              try {
+                if (window.jQuery) window.jQuery(sel).val(op.value).trigger('change');
+              } catch (e) {}
+              render();
+            });
+            wrap.appendChild(b);
+          });
         }
-      });
+        render();
+        sel.addEventListener('change', render);
+        new MutationObserver(render).observe(sel, { childList: true });
+      }
+      [].slice.call(form.querySelectorAll('select')).forEach(segmentize);
+      /* alt kategori alanı panel JS'iyle SONRADAN geliyor — select'i
+         segmentle, yeni etiketine ikonunu ver */
+      new MutationObserver(function () {
+        [].slice.call(form.querySelectorAll('select:not(.ot-seg__select)'))
+          .forEach(segmentize);
+        labelIcons();
+      }).observe(form, { childList: true, subtree: true });
+
+      /* ---- ipuçları + submit etiketi ---- */
+      function hintAfter(el, txt) {
+        if (!el || el.parentNode.querySelector('.ot-hint')) return;
+        var h = document.createElement('div');
+        h.className = 'ot-hint';
+        h.textContent = txt;
+        el.parentNode.appendChild(h);
+      }
+      hintAfter(form.querySelector('input[name*="order" i]'),
+        'You can find your order ID in the Orders section.');
+      hintAfter(form.querySelector('textarea'),
+        'The more details you provide, the faster we can help you.');
+      var ta = form.querySelector('textarea');
+      if (ta && !ta.placeholder) ta.placeholder = 'Please describe your issue in detail...';
+
+      /* etiketlere bilgi ikonu (mockup) — sonradan eklenenler dahil */
+      var INFO = '<svg class="ot-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/>' +
+        '<path d="M12 11v5M12 7.5v.5"/></svg>';
+      function labelIcons() {
+        [].slice.call(form.querySelectorAll('.form-group label')).forEach(function (l) {
+          if (!l.querySelector('.ot-info')) l.insertAdjacentHTML('beforeend', INFO);
+        });
+      }
+      labelIcons();
+
+      /* dosya alanının etiketi yok — mockup'taki eklenir */
+      var upGroup = form.querySelector('.tickets-uploader');
+      upGroup = upGroup && upGroup.closest('.form-group');
+      if (upGroup && !upGroup.querySelector('label')) {
+        var ul = document.createElement('label');
+        ul.textContent = 'Attach files (optional)';
+        upGroup.insertBefore(ul, upGroup.firstChild);
+        labelIcons();
+      }
+
+      /* dosya alanı: boşsa mockup içeriğini bas (panel doldurursa dokunma) */
+      var up = form.querySelector('.tickets-uploader');
+      if (up && !up.children.length) {
+        var lim = (up.getAttribute('data-lang-file-size-incorrect') || '').match(/\d+\s*MB/i);
+        up.innerHTML = '<div class="ot-up">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+          'stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M20 16.6A4.5 4.5 0 0 0 17.5 8h-1.3A7 7 0 1 0 4 14.9"/>' +
+          '<path d="M12 12v9M8.5 15.5 12 12l3.5 3.5"/></svg>' +
+          '<span>Drag &amp; drop files here or click to upload</span>' +
+          (lim ? '<small>Max file size ' + lim[0].replace(/\s+/, '') + '</small>' : '') +
+          '</div>';
+      }
+
+      var sb = form.querySelector('button[type="submit"]');
+      if (sb && !sb.querySelector('svg')) {
+        sb.classList.add('ot-submit-right');
+        sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+          'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="m22 2-11 11M22 2 15 22l-4-9-9-4Z"/></svg>Submit Ticket';
+      }
     })();
 
     /* --- Tickets listesi: mockup panosu (sayaçlar + sekmeler + kartlar) ---
