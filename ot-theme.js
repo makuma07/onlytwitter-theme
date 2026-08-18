@@ -420,7 +420,11 @@
         if (!row) {
           row = document.createElement('span');
           row.className = 'ot-actrow';
-          var view = cell.querySelector('.btn');
+          /* View, .component_button_view sarmalayıcısının içinde: butonu tek
+             başına çekersek boş sarmalayıcı hücrede kalıp hizayı bozuyor —
+             sarmalayıcıyı komple taşı */
+          var view = cell.querySelector('.component_button_view') ||
+                     cell.querySelector('.btn');
           if (view) row.appendChild(view);
           cell.appendChild(row);
         }

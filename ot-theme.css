@@ -2158,3 +2158,7 @@ body.body-public,body.body-internal{
 .body-internal .modal .btn-big-primary{height:46px}
 .modal-backdrop{background:#05060A !important}
 .modal-backdrop.show{opacity:.72 !important}
+
+/* aksiyon sarmalayıcısı: taşınan component_button_view blok değil satır içi */
+.ot-actrow > .component_button_view{display:inline-flex;margin:0}
+.ot-actrow > .component_button_view .btn{margin:0 !important}
