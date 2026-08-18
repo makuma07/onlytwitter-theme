@@ -1387,7 +1387,7 @@ body.body-public,body.body-internal{
   --ticket_dialog_admin_background_color:var(--ot-panel2);
   --ticket_dialog_user_text_color:var(--ot-fg);
   --ticket_dialog_user_username_text_color:var(--ot-fg3);
-  --ticket_dialog_user_background_color:rgba(46,124,255,.14);
+  --ticket_dialog_user_background_color:var(--ot-panel2);
 
   --checkbox_radio_text_color:var(--ot-fg2);
   --checkbox_radio_checked_background_color:var(--ot-accent);
@@ -2246,3 +2246,53 @@ body.body-public,body.body-internal{
 /* kaydırma çubuğu boşluğu her sayfada sabit — kısa sayfalar (çubuksuz)
    15px daha geniş kalıp kart genişliklerini şaşırtıyordu */
 html:has(.body-internal){overflow-y:scroll}
+
+/* ---- bilet görünümü: sohbet düzeni ----
+   Mavi balon gitti; kullanıcı solda, destek sağda, ikisi de nötr.
+   Destek yalnızca isim etiketindeki mavi ile ayrışır. */
+.body-internal .ticket-dialog__title{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 660;
+  font-size:18px !important;letter-spacing:-.015em !important;
+  color:var(--ot-fg) !important;margin:0 0 20px !important;
+}
+.body-internal .ticket-dialog__row{
+  display:flex;flex-direction:column;align-items:flex-start;
+  margin:16px 0;
+}
+.body-internal .ticket-dialog__row-admin{align-items:flex-end}
+/* DİKKAT: panelin sınıf adları ters — row-admin = bilet SAHİBİNİN mesajı,
+   row-user = desteğin mesajı (yakalanan sayfadan doğrulandı). */
+.body-internal .ticket-dialog__row-message{
+  max-width:78%;
+  background:rgba(255,255,255,.06) !important;      /* destek: soldaki balon */
+  border:1px solid var(--ot-line-soft) !important;
+  border-radius:14px 14px 14px 4px !important;
+  padding:14px 16px !important;
+  color:var(--ot-fg2) !important;font-size:14.5px;line-height:1.7;
+}
+.body-internal .ticket-dialog__row-admin .ticket-dialog__row-message{
+  background:var(--ot-panel2) !important;           /* müşteri: sağdaki balon */
+  border-radius:14px 14px 4px 14px !important;
+}
+.body-internal .ticket-dialog__row-message strong{color:var(--ot-fg)}
+.body-internal .ticket-dialog__row-message hr{
+  border:0;border-top:1px solid var(--ot-line-soft);margin:12px 0;
+}
+.body-internal .ticket-dialog__row-bottom{
+  display:flex;gap:8px;margin-top:7px;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.06em;color:var(--ot-fg3);
+}
+.body-internal .ticket-dialog__row-bottom-name{font-weight:600}
+.body-internal .ticket-dialog__row-user .ticket-dialog__row-bottom-name{
+  color:var(--ot-accent2);                          /* destek adı mavi etiket */
+}
+/* cevap alanı: kartın altında hairline ile ayrılır */
+.body-internal .ticket-dialog__footer{
+  border-top:1px solid var(--ot-line-soft);
+  margin-top:22px;padding-top:20px;
+}
+@media (max-width:575px){
+  .body-internal .ticket-dialog__row-message{max-width:92%}
+}
