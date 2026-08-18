@@ -31,7 +31,25 @@
     heroTitle: null,
     // örnek:
     // heroTitle: 'Followers, likes and views — <span class="ot-outline">delivered instantly.</span>',
-    heroLead: null
+    heroLead: null,
+
+    /* Başlığın son satırını konturlu göster. Panel editörü HTML kabul etmediği
+       için span'i JS sarar; metin değişmez. Kapatmak için false yap. */
+    heroOutlineLastLine: true,
+
+    /* Panelde olmayan, demo'ya özel bölümler. false yaparsan eklenmez. */
+    sections: {
+      apiTeaser: true,   // "Plug the panel into your own app"
+      cta:       true,   // "Start growing today."
+      footer:    true    // footer sütunları (Panel / Developers / Company)
+    },
+
+    /* Servis fiyat tablosu.
+       BOŞ bırakıldığı sürece bölüm EKLENMEZ — sitene uydurma fiyat basmamak için
+       kasıtlı olarak böyle. Kendi gerçek fiyatlarını buraya gir, bölüm görünsün.
+       Biçim: { tab:'X (Twitter)', id:1101, name:'...', note:'...', rate:'1.20',
+                min:50, max:100000, refill:true }                                   */
+    services: []
   };
 
   // Sadece giriş yapılmamış sayfalarda çalış
@@ -59,13 +77,30 @@
      1b) Hero metni (yalnızca CONFIG'te doldurulmuşsa)
      -------------------------------------------------------------------- */
   (function heroText() {
-    if (CONFIG.heroTitle) {
-      var h1 = $('.block-signin-text__block-text-title h1');
-      if (h1) h1.innerHTML = CONFIG.heroTitle;
-    }
+    var h1 = $('.block-signin-text__block-text-title h1');
+
+    if (CONFIG.heroTitle && h1) h1.innerHTML = CONFIG.heroTitle;
+
     if (CONFIG.heroLead) {
       var lead = $('.block-signin-text__block-text-description p');
       if (lead) lead.innerHTML = CONFIG.heroLead;
+    }
+
+    /* Başlığın SON SATIRINI konturlu yaz (demo'daki iki tonlu görünüm).
+       Panel editörü ham HTML kabul etmediği için span'i burada sarıyoruz.
+       METİN DEĞİŞMİYOR — sadece işaretleme ekleniyor, yani SEO etkilenmez.
+       Başlıkta satır sonu yoksa hiçbir şey yapılmaz.                        */
+    if (CONFIG.heroOutlineLastLine !== false && h1 && !$('.ot-outline', h1)) {
+      var txt = h1.textContent.replace(/\r/g, '');
+      var i = txt.lastIndexOf('\n');
+      if (i > -1 && txt.slice(i + 1).trim()) {
+        var esc = function (s) {
+          return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        };
+        h1.innerHTML =
+          esc(txt.slice(0, i)).replace(/\n/g, '<br>') +
+          '<br><span class="ot-outline">' + esc(txt.slice(i + 1)) + '</span>';
+      }
     }
   })();
 
@@ -158,6 +193,194 @@
         }
       );
     });
+  })();
+
+  /* -----------------------------------------------------------------------
+     3c) Bölüm başlıklarına mono etiket + yorum avatarlarına baş harf
+     -------------------------------------------------------------------- */
+  (function polishExisting() {
+    // mono etiketler (demo'daki "WHY OUR PANEL" satırları)
+    var KICKERS = {
+      block_51: 'Why our panel',
+      block_50: 'How our panel works',
+      block_52: 'Testimonials',
+      block_54: 'FAQs'
+    };
+    Object.keys(KICKERS).forEach(function (id) {
+      var title = $('#' + id + ' .text-block__title');
+      if (!title || $('.ot-kicker', title.parentNode)) return;
+      var k = document.createElement('div');
+      k.className = 'ot-kicker';
+      k.textContent = KICKERS[id];
+      title.parentNode.insertBefore(k, title);
+    });
+
+    // yorum avatarları -> baş harfler (gerçek fotoğraf varsa dokunma)
+    $$('.reviews-slider__slide').forEach(function (slide) {
+      var av = $('.reviews-slider__slide-avatar', slide);
+      var nameEl = $('.reviews-slider__slide-name', slide);
+      if (!av || !nameEl) return;
+      if (!/no_image/.test(av.style.backgroundImage || '')) return; // gerçek foto
+      var initials = nameEl.textContent.trim().split(/\s+/).slice(0, 2)
+        .map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+      if (initials) av.setAttribute('data-ot-initials', initials);
+    });
+  })();
+
+  /* -----------------------------------------------------------------------
+     3d) Panelde hiç olmayan bölümleri ekle
+     -------------------------------------------------------------------- */
+  (function extraSections() {
+    var body = $('.wrapper-content__body');
+    if (!body || !$('#block_56')) return;   // sadece ana sayfa
+
+    var S = CONFIG.sections || {};
+    var totalServices = ($('#block_98 .totals-card__count-value') || {}).textContent;
+    totalServices = totalServices ? totalServices.trim() : '';
+
+    function make(html) {
+      var d = document.createElement('div');
+      d.innerHTML = html;
+      return d.firstElementChild;
+    }
+
+    /* --- servis tablosu (yalnızca CONFIG.services doluysa) --- */
+    if (CONFIG.services && CONFIG.services.length) {
+      var tabs = [];
+      CONFIG.services.forEach(function (s) {
+        if (tabs.indexOf(s.tab) === -1) tabs.push(s.tab);
+      });
+
+      var sec = make(
+        '<section class="ot-sec"><div class="ot-wrap">' +
+          '<div class="ot-kicker">Service catalogue</div>' +
+          '<h2 class="ot-h2">' + (totalServices ? totalServices + ' services.' : 'Our services.') +
+          '<br>One clean price list.</h2>' +
+          '<div class="ot-tabs"></div><div class="ot-table"><div class="ot-thead">' +
+            '<div>ID</div><div>Service</div><div>Rate / 1000</div><div>Min — Max</div><div>Refill</div>' +
+          '</div><div class="ot-rows"></div></div>' +
+        '</div></section>'
+      );
+
+      var tabBox = $('.ot-tabs', sec), rowBox = $('.ot-rows', sec);
+
+      function paint(tab) {
+        rowBox.innerHTML = CONFIG.services.filter(function (s) { return s.tab === tab; })
+          .map(function (s) {
+            return '<div class="ot-trow">' +
+              '<div class="id">#' + s.id + '</div>' +
+              '<div class="nm">' + s.name + (s.note ? '<small>' + s.note + '</small>' : '') + '</div>' +
+              '<div class="rt">$' + s.rate + '<span>/1K</span></div>' +
+              '<div class="mm">' + Number(s.min).toLocaleString('en-US') + ' — ' +
+                Number(s.max).toLocaleString('en-US') + '</div>' +
+              '<div class="ref">' + (s.refill
+                ? '<span class="ot-badge ok">Refill</span>'
+                : '<span class="ot-badge">No refill</span>') + '</div>' +
+            '</div>';
+          }).join('');
+      }
+
+      tabs.forEach(function (t, i) {
+        var b = document.createElement('button');
+        b.className = 'ot-tab' + (i === 0 ? ' on' : '');
+        b.type = 'button';
+        b.textContent = t;
+        b.addEventListener('click', function () {
+          $$('.ot-tab', tabBox).forEach(function (x) { x.classList.remove('on'); });
+          b.classList.add('on');
+          paint(t);
+        });
+        tabBox.appendChild(b);
+      });
+      paint(tabs[0]);
+
+      var after = $('#block_55') || $('#block_98');
+      if (after) after.parentNode.insertBefore(sec, after.nextSibling);
+    }
+
+    /* --- API tanıtımı --- */
+    if (S.apiTeaser !== false && !$('.ot-api')) {
+      var api = make(
+        '<section class="ot-sec"><div class="ot-wrap ot-api">' +
+          '<div>' +
+            '<div class="ot-kicker">Developer API</div>' +
+            '<h2 class="ot-h2">Plug the panel<br>into your own app.</h2>' +
+            '<p class="ot-lead">A single JSON endpoint handles the whole order lifecycle. ' +
+            'Perfect for resellers running their own storefront.</p>' +
+            '<ul class="ot-api__list">' +
+              '<li><b>services</b> Full catalogue with rates and limits</li>' +
+              '<li><b>add</b> Place an order, with drip-feed options</li>' +
+              '<li><b>status</b> Single or bulk order status (up to 100)</li>' +
+              '<li><b>refill</b> Create and track refills</li>' +
+              '<li><b>balance</b> Read your account balance</li>' +
+            '</ul>' +
+            '<a href="/api" class="ot-btn" style="margin-top:28px">Read the API docs ' +
+            '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" ' +
+            'stroke-width="2" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>' +
+          '</div>' +
+          '<div class="ot-code">' +
+            '<div class="ot-code__bar"><i></i><i></i><i></i><span>POST https://' +
+            location.host + '/api/v2</span></div>' +
+            '<pre>' +
+'<span class="ot-c">// action=add — place an order</span>\n' +
+'{\n' +
+'  <span class="ot-k">"key"</span>:      <span class="ot-s">"YOUR_API_KEY"</span>,\n' +
+'  <span class="ot-k">"action"</span>:   <span class="ot-s">"add"</span>,\n' +
+'  <span class="ot-k">"service"</span>:  <span class="ot-n">1</span>,\n' +
+'  <span class="ot-k">"link"</span>:     <span class="ot-s">"https://x.com/username"</span>,\n' +
+'  <span class="ot-k">"quantity"</span>: <span class="ot-n">1000</span>,\n' +
+'  <span class="ot-k">"runs"</span>:     <span class="ot-n">10</span>,      <span class="ot-c">// drip-feed</span>\n' +
+'  <span class="ot-k">"interval"</span>: <span class="ot-n">60</span>       <span class="ot-c">// minutes</span>\n' +
+'}\n\n' +
+'<span class="ot-c">// → 200 OK</span>\n' +
+'{ <span class="ot-k">"order"</span>: <span class="ot-n">23501</span> }' +
+            '</pre>' +
+          '</div>' +
+        '</div></section>'
+      );
+      var anchor = $('#block_57') || $('#block_54');
+      if (anchor) anchor.parentNode.insertBefore(api, anchor.nextSibling);
+    }
+
+    /* --- CTA bandı --- */
+    if (S.cta !== false && !$('.ot-cta')) {
+      var cta = make(
+        '<section class="ot-sec"><div class="ot-wrap"><div class="ot-cta">' +
+          '<div class="ot-cta__glow"></div>' +
+          '<h2>Start growing<br>today.</h2>' +
+          '<p>Create an account in under a minute, add funds with your preferred method, ' +
+          'and place your first order right after.</p>' +
+          '<div class="ot-cta__row">' +
+            '<a href="/signup" class="ot-btn ot-btn--solid">Create free account</a>' +
+            '<a href="/services" class="ot-btn">' +
+            (totalServices ? 'See all ' + totalServices + ' services' : 'Browse services') +
+            '</a>' +
+          '</div>' +
+        '</div></div></section>'
+      );
+      body.appendChild(cta);
+    }
+
+    /* --- footer sütunları --- */
+    if (S.footer !== false && !$('.ot-fgrid')) {
+      var f = $('.wrapper-content__footer');
+      if (f) {
+        var cols = make(
+          '<div class="ot-wrap"><div class="ot-fgrid">' +
+            '<div><p>An affordable and reliable SMM panel for social media followers, ' +
+            'likes, views and engagement services.</p></div>' +
+            '<div><h4>Panel</h4>' +
+              '<a href="/services">Services</a><a href="/">Sign in</a>' +
+              '<a href="/signup">Sign up</a><a href="/blog">Blog</a></div>' +
+            '<div><h4>Developers</h4>' +
+              '<a href="/api">API v2</a><a href="/api">Documentation</a></div>' +
+            '<div><h4>Company</h4>' +
+              '<a href="/terms">Terms</a></div>' +
+          '</div></div>'
+        );
+        f.insertBefore(cols, f.firstChild);
+      }
+    }
   })();
 
   /* -----------------------------------------------------------------------
