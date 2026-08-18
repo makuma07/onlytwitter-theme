@@ -2219,3 +2219,30 @@ body.body-public,body.body-internal{
 .body-internal .wrapper-content__body > [id^="block_"]:first-child{
   padding-top:0 !important;
 }
+
+/* ---- yatay eşitlik: tüm sayfalar aynı sol çizgi + aynı genişlik ----
+   Bazı sayfalar içeriği ortalanmış dar bir kolona koyuyor (New order 
+   ~%50, Tickets ~%66...). Satırdaki TEK kolonlar tam genişliğe açılır;
+   çok kolonlu satırlar (Services filtre satırı gibi) etkilenmez. */
+.body-internal .wrapper-content__body .row > [class*="col-"]:only-child{
+  flex:0 0 100% !important;max-width:100% !important;
+}
+
+/* konteyner normalize: .container ile .container-fluid farklı genişlikte
+   başlıyordu (265 vs 281). İkisi de aynı kutuya oturur. */
+.body-internal .wrapper-content__body [id^="block_"] > .container,
+.body-internal .wrapper-content__body [id^="block_"] > .container-fluid{
+  max-width:1280px !important;width:100% !important;
+  margin-inline:auto !important;padding-inline:15px !important;
+}
+/* tek kolonlu satırlarda oluk kalksın: kart, tabloyla aynı genişliğe gelir */
+.body-internal .wrapper-content__body .row:has(> [class*="col-"]:only-child){
+  margin-left:0 !important;margin-right:0 !important;
+}
+.body-internal .wrapper-content__body .row > [class*="col-"]:only-child{
+  padding-left:0 !important;padding-right:0 !important;
+}
+
+/* kaydırma çubuğu boşluğu her sayfada sabit — kısa sayfalar (çubuksuz)
+   15px daha geniş kalıp kart genişliklerini şaşırtıyordu */
+html:has(.body-internal){overflow-y:scroll}
