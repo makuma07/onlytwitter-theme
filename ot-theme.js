@@ -488,14 +488,32 @@
         r.classList.add('ot-tmsg');
       });
 
+      /* İlk mesaj konu + "Order ID: N" + hr + metin içeriyor; konu zaten
+         başlıkta. Order ID'yi meta satırına taşı, mesajda yalnız metin kalsın. */
+      var orderId = '';
+      var fm = dlg.querySelector('.ticket-dialog__row-message');
+      if (fm) {
+        var hr = fm.querySelector('hr');
+        if (hr) {
+          var kill = [], n = hr.previousSibling;
+          while (n) { kill.push(n); n = n.previousSibling; }
+          var om = kill.map(function (k) { return k.textContent || ''; })
+                       .join(' ').match(/Order\s*ID\D*?(\d+)/i);
+          if (om) orderId = om[1];
+          kill.forEach(function (k) { if (k.parentNode) k.parentNode.removeChild(k); });
+          hr.parentNode.removeChild(hr);
+        }
+      }
+
       /* başlık altına meta satırı: bilet no + açılış tarihi */
       var title = dlg.querySelector('.ticket-dialog__title');
-      var m = location.pathname.match(/viewticket\/(\d+)/);
+      var m = location.pathname.match(/viewticket\D*?(\d+)/);
       if (title && !dlg.querySelector('.ot-tmeta')) {
         var meta = document.createElement('div');
         meta.className = 'ot-tmeta';
         meta.innerHTML =
           (m ? '<span>Ticket ID: <b>#' + m[1] + '</b></span>' : '') +
+          (orderId ? '<span class="ot-tmeta__oid">Order ID: <b>#' + esc(orderId) + '</b></span>' : '') +
           (firstDate ? '<span>Created: <b>' + esc(firstDate) + '</b></span>' : '');
         if (meta.innerHTML) title.parentNode.insertBefore(meta, title.nextSibling);
       }

@@ -2354,3 +2354,37 @@ html:has(.body-internal){overflow-y:scroll}
 .body-internal .ticket-dialog__footer .btn-big-primary svg{
   width:14px;height:14px;margin-right:7px;
 }
+
+/* ---- bilet thread'i: mockup ölçüleri ---- */
+/* avatarlar mockup'taki gibi 36px (yalnızca thread başlıklarında) */
+.ot-tmsg__head .ot-avatar{width:36px;height:36px;font-size:14px}
+.ot-tmsg__head .ot-avatar--staff svg{width:17px;height:17px}
+.ot-tmsg__head b{font-size:14.5px}
+/* içerik isimle aynı hizada: 36px avatar + 12px boşluk */
+.body-internal .ot-tmsg .ticket-dialog__row-message{padding-left:48px !important}
+.ot-tmsg__head{gap:12px}
+/* panelin destek satırına verdiği içeriden başlatma girintisi kalksın —
+   iki taraf da aynı soldan başlar (mockup) */
+.body-internal .ticket-dialog__row.ot-tmsg{
+  margin:0 !important;padding:16px 18px !important;
+}
+
+/* mesaj metni tam genişliğe yayılmasın (mockup ~%85) */
+.body-internal .ot-tmsg .ticket-dialog__row-message{max-width:86%}
+/* composer: koyu, sınırı belli, odaklanınca mavi halka — yazı alanı olduğu
+   ilk bakışta anlaşılır */
+.body-internal .ticket-dialog__footer{
+  background:rgba(7,8,10,.5) !important;
+  border:1px solid var(--ot-line) !important;
+  transition:border-color .25s var(--ot-ease),box-shadow .25s;
+}
+.body-internal .ticket-dialog__footer:focus-within{
+  border-color:rgba(46,124,255,.55) !important;
+  box-shadow:0 0 0 4px rgba(46,124,255,.12);
+}
+
+/* Order ID: neon yeşil vurgu */
+.ot-tmeta__oid b{
+  color:#4ADE80 !important;
+  text-shadow:0 0 12px rgba(74,222,128,.55);
+}
