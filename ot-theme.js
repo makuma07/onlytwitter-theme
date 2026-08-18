@@ -71,6 +71,12 @@
       password_again: '••••••••'
     },
 
+    /* Sayfa başlığının sağına "+ New order" butonu koy.
+       Üst çubukta zaten "+ Add funds" var; iki mavi buton köşede üst üste
+       kalabalık yaptığı için varsayılan kapalı (New order sidebar'ın ilk
+       öğesi). İstersen true yap. */
+    pageheadCta: false,
+
     /* Servis adlarındaki [Refill: 7days] gibi köşeli parantezleri ayırıp
        isim + çip olarak göster. false: tam isim olduğu gibi kalır.
        (Çipli görünüm bilgiyi kısaltıyor; varsayılan tam isim.) */
@@ -360,6 +366,7 @@
 
     /* --- sayfa başlığına aksiyon butonu (New order sayfası hariç) --- */
     (function pageheadCta() {
+      if (!CONFIG.pageheadCta) return;
       var head = document.querySelector('.ot-pagehead');
       if (!head || head.querySelector('.ot-pagehead__cta')) return;
       var act = document.querySelector('.component-sidebar__menu-item-active a');
