@@ -1674,3 +1674,87 @@ body.body-public,body.body-internal{
   font-weight:600;font-size:13.5px;
   box-shadow:0 8px 22px -8px var(--ot-glow);
 }
+
+/* =========================================================================
+   15) İÇ PANEL — vitrin tasarım dili
+   Değişken remap'i tek başına "renk değişmiş" gibi duruyordu; vitrindeki
+   imza öğeleri buraya taşınıyor: atmosfer, editoryal sayfa başlığı,
+   vurgulu ana kart, marka kimliği.
+   ========================================================================= */
+
+/* Chrome otomatik doldurma inputları beyaza boyuyor — her iki gövdede düzelt */
+.body-public input:-webkit-autofill,
+.body-internal input:-webkit-autofill{
+  -webkit-text-fill-color:var(--ot-fg) !important;
+  -webkit-box-shadow:0 0 0 1000px #0D1013 inset !important;
+  caret-color:var(--ot-fg);
+  border:1px solid var(--ot-line) !important;
+  transition:background-color 99999s ease-out;
+}
+
+/* ---- atmosfer: vitrindeki ışık + ızgara, içerik alanının tepesinde ---- */
+.body-internal .wrapper-content{position:relative;overflow:hidden}
+.body-internal .wrapper-content::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:520px;
+  pointer-events:none;
+  background:
+    radial-gradient(560px 380px at 12% -8%,var(--ot-glow),transparent 68%),
+    radial-gradient(520px 420px at 92% -12%,rgba(46,124,255,.12),transparent 68%),
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:auto,auto,100% 96px,96px 100%;
+  -webkit-mask-image:radial-gradient(ellipse 95% 75% at 50% 0%,#000 12%,transparent 78%);
+  mask-image:radial-gradient(ellipse 95% 75% at 50% 0%,#000 12%,transparent 78%);
+}
+
+/* ---- editoryal sayfa başlığı (ot-theme.js basar) ---- */
+.ot-pagehead{padding:38px 30px 4px}
+.ot-pagehead .ot-kicker{margin-bottom:10px}
+.ot-pagehead__title{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 88,"wght" 740;
+  font-size:clamp(30px,3.6vw,44px) !important;
+  letter-spacing:-.032em !important;line-height:1.02 !important;
+  margin:0 !important;color:var(--ot-fg) !important;
+}
+@media (max-width:575px){.ot-pagehead{padding:26px 20px 0}}
+
+/* ---- ana kart: giriş kartındaki degrade kenarlık ---- */
+.body-internal .ot-primary{position:relative}
+.body-internal .ot-primary::before{
+  content:"";position:absolute;inset:0;border-radius:var(--ot-r);padding:1px;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--ot-accent) 45%,transparent),transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+}
+
+/* ---- sidebar kimliği ---- */
+.body-internal .component-sidebar__menu-brand{
+  display:inline-flex !important;align-items:center;gap:9px;text-decoration:none !important;
+}
+.body-internal .component-sidebar__menu-brand::before{
+  content:"";width:7px;height:7px;border-radius:50%;background:var(--ot-accent);
+  box-shadow:0 0 0 4px rgba(46,124,255,.18);flex:none;
+}
+.body-internal .sidebar-block__left-menu::before{
+  content:"Menu";display:block;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ot-fg3);
+  padding:16px 24px 8px;
+}
+
+/* ---- istatistik kartları: demo'daki sayı/etiket dili ---- */
+.body-internal .totals-block__count-value{
+  font-variant-numeric:tabular-nums;letter-spacing:-.03em !important;
+}
+.body-internal .totals-block__name,
+.body-internal .totals-block__name p{
+  font-family:"IBM Plex Mono",monospace !important;
+  font-size:10.5px !important;letter-spacing:.14em !important;
+  text-transform:uppercase;color:var(--ot-fg3) !important;margin:0 !important;
+}
+
+/* duyuru bloğu başlığı sayfa başlığıyla yarışmasın */
+.body-internal .text-block__title h2{
+  font-size:clamp(18px,2vw,24px) !important;
+}

@@ -148,6 +148,39 @@
     });
   })();
 
+  /* ---------------------------------------------------------------------
+     0b) İç panel: editoryal sayfa başlığı + ana kart vurgusu
+     Vitrindeki dil: mono kicker + iri Archivo başlık. Başlık metni aktif
+     sidebar öğesinden alınır (Tickets rozet sayısı ayıklanır).
+     --------------------------------------------------------------------- */
+  if (IS_INTERNAL) {
+    (function internalPolish() {
+      var body = document.querySelector('.wrapper-content__body');
+      if (!body) return;
+
+      if (!document.querySelector('.ot-pagehead')) {
+        var act = document.querySelector('.component-sidebar__menu-item-active');
+        var name = act ? act.textContent : (document.title || '');
+        name = name.replace(/\s+/g, ' ').trim().replace(/\s*\d+$/, '');
+        if (name) {
+          var brand = (CONFIG.brand ||
+            location.hostname.replace(/^www\./, '').replace(/\.[a-z.]+$/i, ''));
+          var head = document.createElement('div');
+          head.className = 'ot-pagehead';
+          var k = document.createElement('div');
+          k.className = 'ot-kicker'; k.textContent = brand;
+          var h = document.createElement('h1');
+          h.className = 'ot-pagehead__title'; h.textContent = name;
+          head.appendChild(k); head.appendChild(h);
+          body.insertBefore(head, body.firstChild);
+        }
+      }
+
+      var first = body.querySelector('.component_card > .card');
+      if (first) first.classList.add('ot-primary');
+    })();
+  }
+
   // Bundan sonrası vitrin (giriş yapılmamış) sayfalarına özel
   if (!IS_PUBLIC) return;
 
