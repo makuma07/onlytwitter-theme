@@ -498,6 +498,59 @@ body.body-public{
 .body-public #block_54 h2,.body-public #block_54 p{text-align:center !important}
 
 /* -------------------------------------------------------------------------
+   5c) KAYIT SAYFASI (#block_62)
+   ---------------------------------------------------------------------- */
+.body-public #block_62{
+  position:relative;overflow:hidden;
+  margin-top:calc(var(--ot-nav-h) * -1);
+  padding-top:calc(var(--ot-nav-h) + clamp(48px,6vw,80px)) !important;
+  padding-bottom:clamp(56px,7vw,96px) !important;
+}
+/* ana sayfadaki atmosferin aynısı */
+.body-public #block_62::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(680px 520px at 8% -10%,var(--ot-glow),transparent 68%),
+    radial-gradient(620px 620px at 96% -18%,rgba(46,124,255,.16),transparent 68%);
+  filter:blur(10px);
+}
+.body-public #block_62::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:100% 96px,96px 100%;
+  -webkit-mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,#000 20%,transparent 78%);
+  mask-image:radial-gradient(ellipse 90% 65% at 50% 0%,#000 20%,transparent 78%);
+}
+.body-public #block_62 > .container{position:relative;z-index:1}
+
+.ot-signup{
+  display:grid;grid-template-columns:.85fr 1.15fr;gap:52px;align-items:center;
+}
+.ot-signup__aside .ot-h2{max-width:14ch}
+.ot-signup__aside .ot-hero-facts{gap:10px 22px}
+.body-public .ot-signup .component_card{max-width:none}
+
+/* 10 alan tek sütunda çok uzuyordu -> iki sütun */
+.body-public #block_62 form > div:first-child{
+  display:grid;grid-template-columns:1fr 1fr;gap:0 18px;
+}
+/* onay kutusu ve varsa tek kalan alan tüm satırı kaplasın */
+.body-public #block_62 form > div:first-child > *:last-child{grid-column:1 / -1}
+.body-public #block_62 form .form-group{margin-bottom:14px}
+.body-public #block_62 .component_button_submit{margin-top:6px}
+.body-public #block_62 .text-center{margin-top:18px;font-size:13px;color:var(--ot-fg3)}
+
+@media (max-width:991px){
+  .ot-signup{grid-template-columns:1fr;gap:36px;align-items:start}
+  .ot-signup__aside .ot-h2{max-width:none}
+}
+@media (max-width:575px){
+  .body-public #block_62 form > div:first-child{grid-template-columns:1fr}
+}
+
+/* -------------------------------------------------------------------------
    6) ÖZELLİK KARTLARI (#block_55)
    ---------------------------------------------------------------------- */
 .body-public .features-block__card{

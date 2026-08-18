@@ -59,6 +59,18 @@
        (onlytwitter.com -> onlytwitter). */
     brand: null,
 
+    /* Kayıt formu placeholder'ları. null yaparsan hiç eklenmez. */
+    placeholders: {
+      login:          'yourname',
+      email:          'you@example.com',
+      skype:          'live:username',
+      phone:          '+90 5xx xxx xx xx',
+      whatsapp:       '+90 5xx xxx xx xx',
+      website:        'https://example.com',
+      password:       '••••••••',
+      password_again: '••••••••'
+    },
+
     /* Footer alt barındaki sosyal ikonlar. Adres verirsen ikon çıkar,
        boş bırakırsan hiç görünmez (uydurma link basmıyoruz).
        Örn: { x:'https://x.com/hesabin', telegram:'https://t.me/kanalin' } */
@@ -187,6 +199,60 @@
       '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>' +
       '<span>We never ask for your social account password.</span>';
     card.appendChild(sec);
+  })();
+
+  /* -----------------------------------------------------------------------
+     1d2) Kayıt sayfası: solda tanıtım, sağda form kartı
+     Form, input name'leri ve CSRF'e DOKUNULMUYOR — kart düğümü taşınıyor.
+     -------------------------------------------------------------------- */
+  (function signupPage() {
+    var card = $('#block_62 .component_card');
+    if (!card || $('.ot-signup')) return;
+
+    var inner = $('.card', card) || card;
+    if (!$('.ot-login-head', inner)) {
+      var head = document.createElement('div');
+      head.className = 'ot-login-head';
+      head.innerHTML = '<h3>Create your account</h3>' +
+        '<p>It takes less than a minute — no card required.</p>';
+      inner.insertBefore(head, inner.firstChild);
+    }
+
+    var tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+               'stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    var aside = document.createElement('div');
+    aside.className = 'ot-signup__aside';
+    aside.innerHTML =
+      '<div class="ot-kicker">Create account</div>' +
+      '<h1 class="ot-h2">Start growing<br>in minutes.</h1>' +
+      '<p class="ot-lead">Register, add funds with your preferred method, ' +
+      'and place your first order right after.</p>' +
+      '<ul class="ot-hero-facts">' +
+        '<li>' + tick + 'No password required</li>' +
+        '<li>' + tick + 'Prompt delivery</li>' +
+        '<li>' + tick + 'Reseller friendly</li>' +
+        '<li>' + tick + 'API v2 included</li>' +
+      '</ul>';
+
+    /* Placeholder'lar: etiketi tekrar etmeyen, biçim ipucu verenler.
+       İsim alanlarına konmuyor — etiket zaten yeterli.
+       CONFIG.placeholders ile değiştirilebilir, null yaparsan hiç eklenmez. */
+    var PH = CONFIG.placeholders;
+    if (PH) {
+      Object.keys(PH).forEach(function (k) {
+        var i = $('#block_62 [name="RegistrationForm[' + k + ']"]');
+        if (i && !i.placeholder) i.placeholder = PH[k];
+      });
+    }
+
+    var row = card.closest('.row') || card.parentNode;
+    var wrap = document.createElement('div');
+    wrap.className = 'ot-signup';
+    row.parentNode.insertBefore(wrap, row);
+    wrap.appendChild(aside);
+    wrap.appendChild(card);          // düğüm taşınıyor -> form bozulmaz
+    if (!row.querySelector('form')) row.remove();
   })();
 
   /* -----------------------------------------------------------------------
