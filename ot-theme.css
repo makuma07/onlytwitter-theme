@@ -2047,3 +2047,116 @@ body.body-public,body.body-internal{
   }
   .body-internal .totals .col-ed:last-child .totals-block__card{border-bottom:0 !important}
 }
+
+/* sayfa başlığı artık içerik konteynerinin İÇİNDE — kendi genişliği olmaz */
+.ot-pagehead{max-width:none;margin:0;padding:36px 0 6px}
+@media (max-width:575px){.ot-pagehead{padding:26px 0 0}}
+
+/* Services: satır sonu aksiyonları — View (hayalet) + sepet ikonu (dolu),
+   tek hizada yan yana */
+.body-internal td.ot-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:8px;
+  border-bottom:0 !important;
+}
+.body-internal td.ot-actions .btn-actions{margin:0 !important}
+.body-internal .ot-order-btn{
+  height:34px;flex:none;padding:0 16px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:100px;background:var(--ot-accent);color:#fff !important;
+  font-size:13px;font-weight:600;letter-spacing:-.01em;
+  text-decoration:none !important;
+  box-shadow:0 8px 20px -8px var(--ot-glow);
+  transition:transform .3s var(--ot-ease),box-shadow .3s;
+}
+.body-internal .ot-order-btn--icon{width:34px;padding:0;border-radius:50%}
+.body-internal .ot-order-btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px -10px var(--ot-glow)}
+.ot-order-btn svg{width:16px;height:16px}
+
+/* ---- MOBİL menü (#block_47 açılır listesi) ---- */
+@media (max-width:991px){
+  .body-internal #block_47 .navbar-collapse{
+    background:color-mix(in srgb,var(--ot-ink) 97%,transparent);
+    border-bottom:1px solid var(--ot-line-soft);
+  }
+  .body-internal #block_47 .component-navbar-collapse{
+    flex-direction:column;align-items:stretch;gap:2px;
+    padding:6px 16px 16px;
+  }
+  .body-internal #block_47 .navbar-nav{flex-direction:column}
+
+  /* bakiye + Add funds tek satır */
+  .body-internal #block_47 .navbar-nav-currencies{
+    flex-direction:row !important;align-items:center;
+    padding:10px 0 14px;margin:0;
+  }
+  .body-internal #block_47 .navbar-nav-currencies .nav-item{
+    display:flex;align-items:center;gap:10px;width:100%;
+  }
+  .body-internal #block_47 .navbar-nav-currencies .ot-topcta{margin-left:auto}
+
+  /* menü öğeleri: ikonlu, ferah, köşeli hover */
+  .body-internal #block_47 .navbar-nav-sidebar-menu .component-navbar-nav-link{
+    display:flex;align-items:center;gap:11px;
+    padding:12px 10px !important;font-size:15px !important;
+    border-radius:10px;border:1px solid transparent;
+  }
+  .body-internal #block_47 .navbar-nav-sidebar-menu .component-navbar-nav-link:hover{
+    background:var(--ot-panel2) !important;
+  }
+  .body-internal #block_47 .component-navbar-nav-link-active__navbar-private{
+    background:rgba(255,255,255,.07) !important;
+    border-color:rgba(255,255,255,.09) !important;
+  }
+
+  /* altta Account | Logout satırı */
+  .body-internal #block_47 .component-navbar-collapse > .navbar-nav:last-child{
+    flex-direction:row !important;justify-content:space-between;align-items:center;
+    border-top:1px solid var(--ot-line-soft);
+    margin-top:10px;padding-top:12px;
+  }
+  .body-internal #block_47 .component-navbar-collapse > .navbar-nav:last-child a{
+    padding:8px 10px !important;font-size:14.5px !important;
+  }
+}
+
+/* ---- modallar (servis detayı vb.) ---- */
+.body-internal .modal-content,
+.body-public .modal-content{
+  background:var(--ot-ink2) !important;
+  border:1px solid var(--ot-line) !important;
+  border-radius:20px !important;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.85) !important;
+}
+.body-internal .modal-header,
+.body-public .modal-header{
+  border-bottom:1px solid var(--ot-line-soft) !important;
+  padding:20px 24px !important;align-items:center;
+}
+.body-internal .modal-title,.body-internal .modal-header h5,
+.body-public .modal-title,.body-public .modal-header h5{
+  font-family:"Archivo",sans-serif !important;
+  font-variation-settings:"wdth" 90,"wght" 640;
+  font-size:16.5px !important;letter-spacing:-.015em !important;
+  color:var(--ot-fg) !important;margin:0 !important;line-height:1.35 !important;
+}
+.body-internal .modal-header .close,
+.body-public .modal-header .close{
+  color:var(--ot-fg3) !important;opacity:1 !important;text-shadow:none !important;
+  transition:color .2s;
+}
+.body-internal .modal-header .close:hover{color:var(--ot-fg) !important}
+.body-internal .modal-body,
+.body-public .modal-body{
+  padding:20px 24px !important;
+  color:var(--ot-fg2) !important;font-size:14.5px;line-height:1.75;
+}
+.body-internal .modal-body a,
+.body-public .modal-body a{color:var(--ot-accent2);word-break:break-all}
+.body-internal .modal-footer,
+.body-public .modal-footer{
+  border-top:1px solid var(--ot-line-soft) !important;
+  padding:16px 24px 20px !important;
+}
+.body-internal .modal .btn-big-primary{height:46px}
+.modal-backdrop{background:#05060A !important}
+.modal-backdrop.show{opacity:.72 !important}

@@ -71,6 +71,12 @@
       password_again: '••••••••'
     },
 
+    /* Services listesinde her satıra "Order" butonu ekle:
+       /?service=ID ile sipariş ekranı o servis seçili açılır. */
+    orderButtons: true,
+    /* Order butonunun etiketi. Boş string ('') yaparsan sepet ikonu olur. */
+    orderButtonLabel: 'Create',
+
     /* Sayfa başlığının sağına "+ New order" butonu koy.
        Üst çubukta zaten "+ Add funds" var; iki mavi buton köşede üst üste
        kalabalık yaptığı için varsayılan kapalı (New order sidebar'ın ilk
@@ -122,11 +128,12 @@
      inline rengi kaldır (temanın metin rengi devralır). Parlak renklere
      dokunulmaz. Kapatmak için CONFIG.fixContentColors = false.
      --------------------------------------------------------------------- */
-  (function fixContentColors() {
+  function otFixColors(root) {
     if (CONFIG.fixContentColors === false) return;
-    var els = document.querySelectorAll(
-      '.wrapper-content__body [style*="color"], .wrapper-content__body font[color]');
-    els.forEach(function (el) {
+    var scope = root || document;
+    var els = scope.querySelectorAll ?
+      scope.querySelectorAll('[style*="color"], font[color]') : [];
+    [].forEach.call(els, function (el) {
       var c = el.style ? el.style.color : '';
       if (!c && el.getAttribute) c = el.getAttribute('color') || '';
       if (!c) return;
@@ -161,7 +168,18 @@
         'important');
       if (el.removeAttribute) el.removeAttribute('color');
     });
-  })();
+  }
+  otFixColors(document.querySelector('.wrapper-content__body') || document.body);
+  /* Modal gibi SONRADAN eklenen içerik de düzeltilsin */
+  if (window.MutationObserver) {
+    new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        [].forEach.call(m.addedNodes, function (n) {
+          if (n.nodeType === 1) otFixColors(n);
+        });
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
 
   /* ---------------------------------------------------------------------
      0b) İç panel: editoryal sayfa başlığı + ana kart vurgusu
@@ -187,7 +205,12 @@
           var h = document.createElement('h1');
           h.className = 'ot-pagehead__title'; h.textContent = name;
           head.appendChild(k); head.appendChild(h);
-          body.insertBefore(head, body.firstChild);
+          /* İlk bloğun konteynerine girer: başlık her sayfada içerikle
+             aynı hizada başlar (.container ve .container-fluid genişlikleri
+             sayfadan sayfaya değişiyor). */
+          var host = body.querySelector('[id^="block_"] .container, [id^="block_"] .container-fluid');
+          if (host) host.insertBefore(head, host.firstChild);
+          else body.insertBefore(head, body.firstChild);
         }
       }
 
@@ -304,6 +327,20 @@
         });
       });
 
+      /* mobil menü (#block_47 içindeki kopya liste) aynı ikonları alsın */
+      var mob = document.querySelector('#block_47 .navbar-nav-sidebar-menu');
+      if (mob && mob.getAttribute('data-ot') !== 'done') {
+        mob.setAttribute('data-ot', 'done');
+        [].slice.call(mob.querySelectorAll('a')).forEach(function (a) {
+          var href = a.getAttribute('href');
+          if (ICON[href] && !a.querySelector('svg')) {
+            a.insertAdjacentHTML('afterbegin',
+              '<svg class="ot-sb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+              'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + ICON[href] + '</svg>');
+          }
+        });
+      }
+
       var rail = document.querySelector('.component-sidebar__menu');
       if (rail && !rail.querySelector('.ot-sb-user')) {
         var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
@@ -351,6 +388,35 @@
             h.insertAdjacentHTML('beforeend', '<span class="ot-count">' + n + ' services</span>');
           }
         });
+    })();
+
+    /* --- Services: satır başına "Order" butonu (/?service=ID) --- */
+    (function orderButtons() {
+      if (CONFIG.orderButtons === false) return;
+      [].slice.call(document.querySelectorAll('.services-list tbody tr')).forEach(function (tr) {
+        if (tr.classList.contains('services-list-category-title')) return;
+        if (tr.querySelector('.ot-order-btn') || !tr.cells || tr.cells.length < 3) return;
+        var id = (tr.cells[1].textContent || '').trim();
+        if (!/^\d+$/.test(id)) return;
+        var cell = tr.querySelector('.services-list__description') || tr.cells[tr.cells.length - 1];
+        if (!cell) return;
+        var a = document.createElement('a');
+        a.href = '/?service=' + id;
+        a.className = 'ot-order-btn';
+        a.title = 'Order';
+        a.setAttribute('aria-label', 'Order');
+        if (CONFIG.orderButtonLabel) {
+          a.textContent = CONFIG.orderButtonLabel;
+        } else {
+          a.classList.add('ot-order-btn--icon');
+          a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/>' +
+            '<path d="M3 4h2l2.2 11h11l1.8-7H7"/><path d="M13 6h4M15 4v4"/></svg>';
+        }
+        cell.appendChild(a);
+        cell.classList.add('ot-actions');
+      });
     })();
 
     /* --- üst çubuk: kaydırınca cam efekti --- */
